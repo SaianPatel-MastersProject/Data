@@ -5,6 +5,7 @@ classdef rFproDataPlotter
         dataFilePath; % Path to the data csv
         dataTable; % The csv stored as a table
         channels; % List of logged channels
+        sampleFrequency; % Sampling rate
         
     end
     
@@ -15,6 +16,8 @@ classdef rFproDataPlotter
             obj.dataFilePath = dataFilePath;
             opts = detectImportOptions(dataFilePath,'NumHeaderLines',0);
             obj.dataTable = readtable(dataFilePath, opts);
+            timeStep = diff(obj.dataTable.time);
+            obj.sampleFrequency = 1/(timeStep(1));
             
             
         end
