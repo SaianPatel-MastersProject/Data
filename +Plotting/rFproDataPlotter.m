@@ -71,6 +71,22 @@ classdef rFproDataPlotter
             
         end
         
+        function plotCombinedBraking(obj)
+            
+            figure;
+            
+            scatter(obj.dataTable.steerAngle, obj.dataTable.brake);
+            
+        end
+        
+        function plotCombinedTraction(obj)
+            
+            figure;
+            
+            scatter(obj.dataTable.steerAngle, obj.dataTable.throttle);
+            
+        end
+        
     end
 end
 
