@@ -3,9 +3,11 @@ classdef rFproDataPlotter
     properties
         
         dataFilePath; % Path to the data csv
-        dataTable; % The csv stored as a table
-        channels; % List of logged channels
+        fullDataTable; % The entire csv stored as a table
+        dataTable; % The lap of choice stored as a table
         sampleFrequency; % Sampling rate
+        channels; % List of logged channels
+        lapNumbers; % List of lap numbers in csv
         
     end
     
@@ -15,8 +17,8 @@ classdef rFproDataPlotter
 
             obj.dataFilePath = dataFilePath;
             opts = detectImportOptions(dataFilePath,'NumHeaderLines',0);
-            obj.dataTable = readtable(dataFilePath, opts);
-            timeStep = diff(obj.dataTable.time);
+            obj.fullDataTable = readtable(dataFilePath, opts);
+            timeStep = diff(obj.fullDataTable.time);
             obj.sampleFrequency = 1/(timeStep(1));
             
             
@@ -24,8 +26,20 @@ classdef rFproDataPlotter
         
         function obj = getChannels(obj)
             
-            obj.channels = (obj.dataTable.Properties.VariableNames)';
+            obj.channels = (obj.fullDataTable.Properties.VariableNames)';
             
+            
+        end
+        
+        function obj = getLapNumbers(obj)
+            
+            obj.lapNumbers = unique(obj.fullDataTable.lapNumber);
+            
+        end
+        
+        function obj = filterByLap(obj, lap)
+            
+            obj.dataTable = obj.fullDataTable(obj.fullDataTable.lapNumber == lap,:);
             
         end
         
