@@ -150,8 +150,11 @@ classdef rFproCSVtoMAT
             % Set the .mat filename
             matFileName = sprintf('+ProcessedData/%s.mat', obj.metadata.runID);
 
+            % Create a dummy object
+            runStruct = obj;
+
             % Save the .mat
-            save(matFileName, 'obj');
+            save(matFileName, 'runStruct');
 
 
         end
