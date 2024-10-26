@@ -237,7 +237,7 @@ classdef rFproCSVtoMAT
             end
 
             % Set the .mat filename
-            matFileName = sprintf('%s.mat', obj.metadata.runName);
+            matFileName = sprintf('%s.mat', obj.metadata.runID);
 
             % Set the .mat filepath
             matFilePath = fullfile(eventFolder, matFileName);
