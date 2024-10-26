@@ -205,14 +205,28 @@ classdef rFproCSVtoMAT
 
         function saveData(obj)
 
+            % Get the folder that the data should belong to
+            eventFolder = fullfile('+ProcessedData', obj.metadata.year, obj.metadata.event);
+            
+            % Check that the folder exists
+            if ~isdir(eventFolder)
+
+                display('Event folder does not exist.');
+                return;
+
+            end
+
             % Set the .mat filename
-            matFileName = sprintf('+ProcessedData/%s.mat', obj.metadata.runName);
+            matFileName = sprintf('%s.mat', obj.metadata.runName);
+
+            % Set the .mat filepath
+            matFilePath = fullfile(eventFolder, matFileName);
 
             % Create a dummy object
             runStruct = obj;
 
             % Save the .mat
-            save(matFileName, 'runStruct');
+            save(matFilePath, 'runStruct');
 
 
         end
