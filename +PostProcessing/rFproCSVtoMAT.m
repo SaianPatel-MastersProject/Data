@@ -126,6 +126,14 @@ classdef rFproCSVtoMAT
             obj.metadata.driver = driverName;
 
         end
+
+        %% Function to set the vehicle model description
+        function obj = setVehicleModel(obj, vehicleModel)
+
+            % Set the driver name
+            obj.metadata.vehicleModel = vehicleModel;
+
+        end
         %% Function to get some info on the data
         function obj = getDataInfo(obj)
 

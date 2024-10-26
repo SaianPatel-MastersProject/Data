@@ -1,5 +1,5 @@
 %% run rFpro csv to mat
-function runFileConversion(csvFilePath, runDescription, runNumber, driverName)
+function runFileConversion(csvFilePath, runDescription, runNumber, driverName, vehicleModel)
 
     % Initiate class
     try
@@ -79,6 +79,18 @@ function runFileConversion(csvFilePath, runDescription, runNumber, driverName)
 
     end
 
+    % Set the vehicle model description
+    try
+
+        obj = obj.setVehicleModel(vehicleModel);
+
+    catch ME
+
+        disp('ERROR: Failed to set the vehicle model description.')
+        disp(ME.message);
+        return;
+
+    end
     % Get the information on the data
     try
 
