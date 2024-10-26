@@ -10,6 +10,7 @@ classdef rFproCSVtoMAT
 
     methods
 
+        %% Function to initiate class
         function obj = rFproCSVtoMAT(csvFilePath)
             
             % Construct an instance of this class by reading the csv
@@ -43,6 +44,7 @@ classdef rFproCSVtoMAT
 
         end
 
+        %% Function to get run metadata and important info
         function obj = getRunInfo(obj)
 
             % Store the filename as the ID
@@ -117,6 +119,7 @@ classdef rFproCSVtoMAT
 
         end
 
+        %% Function to get some info on the data
         function obj = getDataInfo(obj)
 
             % Get a list of channels in the data
@@ -128,6 +131,7 @@ classdef rFproCSVtoMAT
 
         end
 
+        %% Function to get some info on the laps
         function obj = getLapInfo(obj)
 
             % Get a list of lap numbers in the run
@@ -203,6 +207,7 @@ classdef rFproCSVtoMAT
 
         end
 
+        %% Function to save the data
         function saveData(obj)
 
             % Get the folder that the data should belong to
