@@ -119,6 +119,13 @@ classdef rFproCSVtoMAT
 
         end
 
+        %% Function to set the driver info
+        function obj = setDriverName(obj, driverName)
+
+            % Set the driver name
+            obj.metadata.driver = driverName;
+
+        end
         %% Function to get some info on the data
         function obj = getDataInfo(obj)
 

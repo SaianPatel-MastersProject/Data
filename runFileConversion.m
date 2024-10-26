@@ -1,5 +1,5 @@
 %% run rFpro csv to mat
-function runFileConversion(csvFilePath, runDescription, runNumber)
+function runFileConversion(csvFilePath, runDescription, runNumber, driverName)
 
     % Initiate class
     try
@@ -66,6 +66,19 @@ function runFileConversion(csvFilePath, runDescription, runNumber)
 
     end
     
+    % Set the driver name
+    try
+
+        obj = obj.setDriverName(driverName);
+
+    catch ME
+
+        disp('ERROR: Failed to set the driver name.')
+        disp(ME.message);
+        return;
+
+    end
+
     % Get the information on the data
     try
 
