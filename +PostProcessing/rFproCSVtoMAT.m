@@ -39,20 +39,23 @@ classdef rFproCSVtoMAT
             obj.metadata.filePath = csvFilePath;
 
             % Store the filename as the ID
-            [~, obj.metadata.runID, ~] = fileparts(csvFilePath);
+            [~, obj.metadata.runName, ~] = fileparts(csvFilePath);
 
         end
 
         function obj = getRunInfo(obj)
 
             % Store the filename as the ID
-            [~, obj.metadata.runID, ~] = fileparts(obj.metadata.filePath);
+            [~, obj.metadata.runName, ~] = fileparts(obj.metadata.filePath);
 
             % Store track name
-            obj.metadata.track = extractBefore(obj.metadata.runID, '-');
+            obj.metadata.track = extractBefore(obj.metadata.runName, '-');
 
             % Store run date
-            dateString = char(extractBetween(obj.metadata.runID, '-', '_'));
+            dateString = char(extractBetween(obj.metadata.runName, '-', '_'));
+
+            % Store the year
+            obj.metadata.year = dateString(1:4);
 
             % Convert dateString to dateNum
             dateNum = datenum(dateString, 'yyyymmdd');
@@ -79,7 +82,38 @@ classdef rFproCSVtoMAT
             obj.metadata.day = sprintf('D%i', day);
 
             % Store run time
-            obj.metadata.time = extractAfter(obj.metadata.runID, '_');
+            obj.metadata.time = extractAfter(obj.metadata.runName, '_');
+
+        end
+
+        %% Function to set a run description
+        function obj = setRunDescription(obj, runDescription)
+
+            % Store the specified run description
+            obj.metadata.description = runDescription;
+
+        end
+
+        %% Function to set the run number
+        function obj = setRunNumber(obj, runNumber)
+
+            % Store the specified run description
+            if runNumber < 10
+
+                obj.metadata.runNumber = sprintf('R0%i', runNumber);
+
+            else
+
+                obj.metadata.runNumber = sprintf('R%i', runNumber);
+
+            end
+        end
+
+        %% Function to set unique ID
+        function obj = setUniqueIdentifier(obj)
+
+            % Store a unique ID by combining Event, Day and Run Number
+            obj.metadata.runID = sprintf('%s_%s_%s_%s', obj.metadata.year, obj.metadata.event, obj.metadata.day, obj.metadata.runNumber);
 
         end
 
@@ -172,7 +206,7 @@ classdef rFproCSVtoMAT
         function saveData(obj)
 
             % Set the .mat filename
-            matFileName = sprintf('+ProcessedData/%s.mat', obj.metadata.runID);
+            matFileName = sprintf('+ProcessedData/%s.mat', obj.metadata.runName);
 
             % Create a dummy object
             runStruct = obj;
