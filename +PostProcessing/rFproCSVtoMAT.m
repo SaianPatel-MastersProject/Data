@@ -52,7 +52,31 @@ classdef rFproCSVtoMAT
             obj.metadata.track = extractBefore(obj.metadata.runID, '-');
 
             % Store run date
-            obj.metadata.date = char(extractBetween(obj.metadata.runID, '-', '_'));
+            dateString = char(extractBetween(obj.metadata.runID, '-', '_'));
+
+            % Convert dateString to dateNum
+            dateNum = datenum(dateString, 'yyyymmdd');
+
+            % Get Monday datenum for that week
+            dayOfWeek = weekday(dateNum);
+            if dayOfWeek == 2
+                monday = dateNum;
+            else
+                monday = dateNum - (dayOfWeek - 2);
+            end
+
+            % Format monday as mm_dd
+            mondayDateString = datestr(monday, 'mm_dd');
+
+            % Store the event
+            obj.metadata.event = ['FYP', mondayDateString];
+
+            % Store the day (D1 = Monday, D7 = Sunday)
+            day = dayOfWeek - 1;
+            if day == 0
+                day = 7;
+            end
+            obj.metadata.day = sprintf('D%i', day);
 
             % Store run time
             obj.metadata.time = extractAfter(obj.metadata.runID, '_');
