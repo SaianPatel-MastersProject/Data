@@ -33,7 +33,7 @@ function [runSummaryTable, lapsTable] = createRunSummary()
         dummyLapStruct(i).LapNumber = runStruct.metadata.laps(i).lapNumber;
         dummyLapStruct(i).LapTime = runStruct.metadata.laps(i).lapTime;
         dummyLapStruct(i).LapType = runStruct.metadata.laps(i).lapType;
-        % dummyLapStruct(i).VehicleModel = runStruct.metadata.vehicleModel;
+        dummyLapStruct(i).VehicleModel = string(runStruct.metadata.vehicleModel);
 
     end
 
@@ -52,7 +52,7 @@ function [runSummaryTable, lapsTable] = createRunSummary()
         'Description', string(runStruct.metadata.description); ...
         'Laps', (size(runStruct.metadata.laps, 2)); ...
         'FileName', string(runStruct.metadata.runName); ...
-        % 'VehicleModel', string(runStruct.metadata.vehicleModel); ...
+        'VehicleModel', string(runStruct.metadata.vehicleModel); ...
     }';
 
     % Save this as a table
