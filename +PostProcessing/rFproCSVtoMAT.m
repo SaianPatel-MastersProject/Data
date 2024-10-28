@@ -66,6 +66,11 @@ classdef rFproCSVtoMAT
             dayOfWeek = weekday(dateNum);
             if dayOfWeek == 2
                 monday = dateNum;
+            elseif dayOfWeek == 1
+                
+                % Get previous Monday if current day is Sunday
+                monday = dateNum - (dayOfWeek - 2 + 7);
+
             else
                 monday = dateNum - (dayOfWeek - 2);
             end
