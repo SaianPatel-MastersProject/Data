@@ -31,7 +31,7 @@ classdef multiPlotter
             % Check current number of entries in the struct
             nEntries = size(obj.data, 2);
 
-            if isempty(obj.data.lapNumber)
+            if isempty(obj.data(1).lapNumber)
 
                 i = 1;
 
@@ -60,7 +60,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.speed * 3.6);
+                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.speed * 3.6);
 
             end
             
@@ -73,7 +73,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.throttle);
+                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.throttle);
 
             end
 
@@ -86,7 +86,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.brake);
+                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.brake);
 
             end
 
@@ -99,7 +99,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.steerAngle);
+                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.steerAngle);
 
             end
 
@@ -110,5 +110,29 @@ classdef multiPlotter
             linkaxes(findall(gcf,'Type','axes'), 'x');
 
         end
+        
+        function plotRacingLine(obj)
+
+            nLaps = size(obj.data, 2);
+
+            figure;
+
+            axis equal
+
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.posX, obj.data(i).lapData.posY);
+
+            end
+
+            xlabel('X Position');
+            ylabel('Y Position');
+            
+
+        end
+
+    
     end
 end
