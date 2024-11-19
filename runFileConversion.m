@@ -1,5 +1,5 @@
 %% run rFpro csv to mat
-function runFileConversion(csvFilePath, runDescription, runNumber, driverName, vehicleModel)
+function obj = runFileConversion(csvFilePath, runDescription, runNumber, driverName, vehicleModel)
 
     % Initiate class
     try
@@ -120,7 +120,7 @@ function runFileConversion(csvFilePath, runDescription, runNumber, driverName, v
     % Save the .mat
     try
 
-        obj.saveData();
+        obj = obj.saveData();
 
     catch ME
 
