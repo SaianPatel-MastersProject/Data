@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="822723044" file="D:\Users\Saian\Workspace\Data\DataCommitter.prj" location="D:\Users\Saian\Workspace\Data" name="DataCommitter" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1481457469" file="D:\Users\Saian\Workspace\Data\DataCommitter.prj" location="D:\Users\Saian\Workspace\Data" name="DataCommitter" target="target.mlapps" target-name="Package App">
     <param.appname>DataCommitter</param.appname>
     <param.authnamewatermark>Saian Patel</param.authnamewatermark>
     <param.email />
@@ -8,7 +8,7 @@
     <param.icons />
     <param.summary />
     <param.description />
-    <param.screenshot>C:\Users\Saian\AppData\Local\Temp\tp7ee8facb_7d09_418f_ba51_3e0469f2d80e.png</param.screenshot>
+    <param.screenshot>C:\Users\Saian\AppData\Local\Temp\tp927cadae_da13_49d5_8816_6522324b8afb.png</param.screenshot>
     <param.version>1.0</param.version>
     <param.products.name />
     <param.products.id />
