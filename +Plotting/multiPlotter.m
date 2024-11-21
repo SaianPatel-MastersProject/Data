@@ -25,7 +25,6 @@ classdef multiPlotter
             % Get the runID
             runID = runStruct.metadata.runID;
 
-
             % Read in CTE layers if they exist
             CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
 
@@ -44,6 +43,9 @@ classdef multiPlotter
 
             % Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
+
+            % Add a tLap Channel
+            lapData = addvars(lapData, (lapData.time - lapData.time(1)), 'NewVariableNames', 'tLap');
 
             % Check current number of entries in the struct
             nEntries = size(obj.data, 2);
@@ -175,11 +177,11 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.CTE);
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.CTE);
 
             end
 
-            xlabel('Lap Distance');
+            xlabel('Lap Time (s)');
             ylabel('CTE');
 
         end
