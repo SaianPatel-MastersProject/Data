@@ -25,6 +25,23 @@ classdef multiPlotter
             % Get the runID
             runID = runStruct.metadata.runID;
 
+
+            % Read in CTE layers if they exist
+            CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
+
+            if isfile(CTEmatFilePath)
+
+                % Load the CTE layer
+                load(CTEmatFilePath)
+
+                % Join CTE layer to the data for the run
+                runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
+                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+
+
+            end
+
             % Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
 
@@ -111,6 +128,7 @@ classdef multiPlotter
 
         end
         
+        %% Function for plotting racing line
         function plotRacingLine(obj)
 
             nLaps = size(obj.data, 2);
@@ -133,6 +151,38 @@ classdef multiPlotter
 
         end
 
+        %% Function for plotting CTE
+        function plotCTE(obj)
+
+            nLaps = size(obj.data, 2);
+           
+            figure;
+
+            subplot(2,1,1);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.CTE);
+
+            end
+
+            xlabel('Lap Distance Along Reference');
+            ylabel('CTE');
+            
+            subplot(2,1,2);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.CTE);
+
+            end
+
+            xlabel('Lap Distance');
+            ylabel('CTE');
+
+        end
     
     end
 end
