@@ -18,6 +18,8 @@ function [vError, refVel, rCurvCurrent] = calculateVelocityError(currentPosition
 
     % Map straights to inf
     rCurvature(isinf(rCurvature)) = inf;
+    rCurvature = movmean(rCurvature, 5);
+    rCurvature(rCurvature > 200) = 200;
     rMin = min(rCurvature);
     rMax = max(rCurvature);
 
@@ -28,6 +30,7 @@ function [vError, refVel, rCurvCurrent] = calculateVelocityError(currentPosition
     rCurvCurrent = rCurvature(closestWaypointIdx);
 
     refVel = vMin + (vMax - vMin) .* ((rCurvCurrent - rMin) ./ (rMax - rMin));
+    refVel = max(vMin, min(vMax, refVel));
 
     vError = currentVel - refVel;
 
