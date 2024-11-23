@@ -41,6 +41,22 @@ classdef multiPlotter
 
             end
 
+            % Read in VE layers if they exist
+            VEmatFilePath = strrep(matFilePath, '.mat', '_VE.mat');
+
+            if isfile(VEmatFilePath)
+
+                % Load the CTE layer
+                load(VEmatFilePath)
+
+                % Join CTE layer to the data for the run
+                runStruct.data = addvars(runStruct.data, dataVE.vError, 'NewVariableNames', 'vError');
+                runStruct.data = addvars(runStruct.data, dataVE.refVel, 'NewVariableNames', 'refVel');
+                runStruct.data = addvars(runStruct.data, dataVE.rCurvature, 'NewVariableNames', 'rCurvature');
+
+
+            end
+
             % Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
 
