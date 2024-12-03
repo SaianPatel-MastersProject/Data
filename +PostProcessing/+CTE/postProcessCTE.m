@@ -35,9 +35,13 @@ function postProcessCTE(matFilePath, bInterpolated, nPoints, interpMethod)
     % Create a table for the CTE data
     % Define the column names
     columnNames = {'CTE', 'closestWaypointX', 'closestWaypointY'};
+    nRows = size(runStruct.data, 1);
+    arrayCTE = zeros([nRows, 1]);
+    arrayClosestWaypointX = arrayCTE;
+    arrayClosestWaypointY = arrayCTE;
 
     % Create an empty table with the specified column names
-    dataCTE = table('Size', [0, length(columnNames)], ...
+    dataCTE = table('Size', [nRows, length(columnNames)], ...
         'VariableTypes', {'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
@@ -47,11 +51,18 @@ function postProcessCTE(matFilePath, bInterpolated, nPoints, interpMethod)
         currentPoint = [runStruct.data.posX(i), runStruct.data.posY(i)];
         [CTE, closestWaypoint] = PostProcessing.CTE.calculateCTE(currentPoint, AIW_Data);
 
-        dataCTE.CTE(i) = CTE;
-        dataCTE.closestWaypointX(i) = closestWaypoint(1);
-        dataCTE.closestWaypointY(i) = closestWaypoint(2);
+        % dataCTE.CTE(i) = CTE;
+        % dataCTE.closestWaypointX(i) = closestWaypoint(1);
+        % dataCTE.closestWaypointY(i) = closestWaypoint(2);
+        arrayCTE(i) = CTE;
+        arrayClosestWaypointX(i) = closestWaypoint(1);
+        arrayClosestWaypointY(i) = closestWaypoint(2);
 
     end
+
+    dataCTE.CTE = arrayCTE;
+    dataCTE.closestWaypointX = arrayClosestWaypointX;
+    dataCTE.closestWaypointY = arrayClosestWaypointY;
 
     % Write the CTE table as a layer
     % Set the .mat filename
