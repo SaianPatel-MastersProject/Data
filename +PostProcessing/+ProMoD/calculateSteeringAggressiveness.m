@@ -2,7 +2,7 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
 
     % Set maximum and minimum steering angles to define normal cornering
     deltaMax = 1;
-    deltaMin = 0.2;
+    deltaMin = 0.1;
 
     % Get the number of laps
     nLaps = size(runStruct.metadata.laps, 2);
