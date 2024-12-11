@@ -57,6 +57,19 @@ classdef multiPlotter
 
             end
 
+            % Read in ProMoD layers if they exist
+            ProMoDmatFilePath = strrep(matFilePath, '.mat', '_ProMoD.mat');
+
+            if isfile(ProMoDmatFilePath)
+
+                % Load the CTE layer
+                load(ProMoDmatFilePath)
+
+                % Join CTE layer to the data for the run
+                runStruct.data = addvars(runStruct.data, dataProMoD.MSteer, 'NewVariableNames', 'MSteer');
+
+            end
+
             % Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
 
