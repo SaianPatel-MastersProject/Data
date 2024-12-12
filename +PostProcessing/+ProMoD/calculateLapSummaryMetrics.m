@@ -78,6 +78,8 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         % Create a lap time channel
         lapData.lapTime = lapData.time - lapData.time(1);
 
+        % 
+
         %% Lap-Based Metrics
         % Create dSteerWheel channel
         lapData.dSteerAngle = [0; diff(lapData.steerAngle * 225 * 100)];
@@ -107,6 +109,9 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         minCTE = min(lapData.CTE);
         avgCTE = mean(lapData.CTE);
 
+        %% MSteer
+        MSteerFinal = lapData.MSteer(end);
+
         % Populate the array
         lapSummaryCell{i, 1} = runID;
         lapSummaryCell{i, 2} = driverID;
@@ -122,6 +127,7 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         lapSummaryArray(i, 10) = maxCTE;
         lapSummaryArray(i, 11) = minCTE;
         lapSummaryArray(i, 12) = avgCTE;
+        lapSummaryArray(i, 13)  = MSteerFinal;
 
     end
 
@@ -140,11 +146,12 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         'TACTE', ...
         'maxCTE', ...
         'minCTE', ...
-        'avgCTE'};
+        'avgCTE', ...
+        'MSteer'};
 
     % Save as a table
     lapSummary = table('Size', [size(lapSummaryArray,1), length(columnNames)], ...
-        'VariableTypes', {'string', 'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
+        'VariableTypes', {'string', 'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
     lapSummary.runID = lapSummaryCell(:,1);
@@ -161,6 +168,7 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
     lapSummary.maxCTE = lapSummaryArray(:,10);
     lapSummary.minCTE = lapSummaryArray(:,11);
     lapSummary.avgCTE = lapSummaryArray(:,12);
+    lapSummary.MSteer = lapSummaryArray(:,13);
 
     % Filter by flying laps only
     lapSummary = lapSummary(lapSummary.lapType == 1, :);
