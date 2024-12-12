@@ -120,10 +120,10 @@ hold on;
 
 for i = 1:nDrivers
 
-    scatter(lapSummary.avg_dSteerAngle(strcmp(lapSummary.driver, driverList{i})), lapSummary.min_dSteerAngle(strcmp(lapSummary.driver, driverList{i})));
+    scatter(lapSummary.MSteer(strcmp(lapSummary.driver, driverList{i})), lapSummary.min_dSteerAngle(strcmp(lapSummary.driver, driverList{i})));
     grid on;
     grid minor;
-    xlabel('Average Steering Angle Derivative (°/s)')
+    xlabel('MSteer')
     ylabel('Minimum Steering Angle Derivative (°/s)')
     
 end
