@@ -15,6 +15,9 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         % Get the run ID
         runID = runStruct.metadata.runID;
 
+        % Get the driver
+        driverID = runStruct.metadata.driver;
+
         % Set the lap number
         lapNumber = runStruct.metadata.laps(i).lapNumber;
 
@@ -50,6 +53,7 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
 
         % Populate the array
         lapSummaryCell{i, 1} = runID;
+        lapSummaryCell{i, 2} = driverID;
         lapSummaryArray(i, 1) = lapNumber;
         lapSummaryArray(i, 2) = lapType;
         lapSummaryArray(i, 3) = avgSteerAngle;
@@ -62,14 +66,15 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
     end
 
     % Set the column names
-    columnNames = {'runID', 'lapNumber', 'lapType', 'avgSteerAngle', 'maxSteerAngle', 'minSteerAngle', 'avg_dSteerAngle', 'max_dSteerAngle', 'min_dSteerAngle'};
+    columnNames = {'runID', 'driver', 'lapNumber', 'lapType', 'avgSteerAngle', 'maxSteerAngle', 'minSteerAngle', 'avg_dSteerAngle', 'max_dSteerAngle', 'min_dSteerAngle'};
 
     % Save as a table
     lapSummary = table('Size', [size(lapSummaryArray,1), length(columnNames)], ...
-        'VariableTypes', {'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
+        'VariableTypes', {'string', 'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
     lapSummary.runID = lapSummaryCell(:,1);
+    lapSummary.driver = lapSummaryCell(:,2);
     lapSummary.lapNumber = lapSummaryArray(:,1);
     lapSummary.lapType = lapSummaryArray(:,2);
     lapSummary.avgSteerAngle = lapSummaryArray(:,3);
