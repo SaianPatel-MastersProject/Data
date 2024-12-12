@@ -4,13 +4,22 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
     nLaps = size(runStruct.metadata.laps, 2);
 
     % Create an array which will be later a table
-    lapSummaryArray = zeros([size(nLaps, 1), 11]);
+    lapSummaryArray = (zeros([size(nLaps, 1), 8]));
+
+    % Create a cell for storing the runID
+    lapSummaryCell = {};
 
     % Loop through each lap
     for i = 1:nLaps
 
+        % Get the run ID
+        runID = runStruct.metadata.runID;
+
         % Set the lap number
-        lapNumber = i - 1;
+        lapNumber = runStruct.metadata.laps(i).lapNumber;
+
+        % Set the lap type
+        lapType = runStruct.metadata.laps(i).lapType;
 
         % Get the data for the lap
         lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
@@ -19,16 +28,16 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         lapData.lapTime = lapData.time - lapData.time(1);
 
         % Create dSteerWheel channel
-        lapData.dSteerAngle = [0; diff(lapData.steerAngle)];
+        lapData.dSteerAngle = [0; diff(lapData.steerAngle * 225 * 100)];
 
         % Get the average steering wheel angle
-        avgSteerAngle = mean(lapData.steerAngle);
+        avgSteerAngle = mean(lapData.steerAngle * 225);
 
         % Get the maximum steering wheel angles
-        maxSteerAngle = max(lapData.steerAngle);
+        maxSteerAngle = max(lapData.steerAngle *225);
 
         % Get the minimum steering wheel angle
-        minSteerAngle = min(lapData.steerAngle);
+        minSteerAngle = min(lapData.steerAngle * 225);
 
         % Get the average steering wheel angle
         avg_dSteerAngle = mean(lapData.dSteerAngle);
@@ -40,35 +49,37 @@ function lapSummary = calculateLapSummaryMetrics(runStruct)
         min_dSteerAngle = min(lapData.dSteerAngle);
 
         % Populate the array
+        lapSummaryCell{i, 1} = runID;
         lapSummaryArray(i, 1) = lapNumber;
-        lapSummaryArray(i, 2) = avgSteerAngle;
-        lapSummaryArray(i, 3) = maxSteerAngle;
-        lapSummaryArray(i, 4) = minSteerAngle;
-        lapSummaryArray(i, 5) = avg_dSteerAngle;
-        lapSummaryArray(i, 6) = max_dSteerAngle;
-        lapSummaryArray(i, 7) = min_dSteerAngle;
-
-
+        lapSummaryArray(i, 2) = lapType;
+        lapSummaryArray(i, 3) = avgSteerAngle;
+        lapSummaryArray(i, 4) = maxSteerAngle;
+        lapSummaryArray(i, 5) = minSteerAngle;
+        lapSummaryArray(i, 6) = avg_dSteerAngle;
+        lapSummaryArray(i, 7) = max_dSteerAngle;
+        lapSummaryArray(i, 8) = min_dSteerAngle;
 
     end
 
     % Set the column names
-    columnNames = {'lapNumber', 'avgSteerAngle', 'maxSteerAngle', 'minSteerAngle', 'avg_dSteerAngle', 'max_dSteerAngle', 'min_dSteerAngle'};
+    columnNames = {'runID', 'lapNumber', 'lapType', 'avgSteerAngle', 'maxSteerAngle', 'minSteerAngle', 'avg_dSteerAngle', 'max_dSteerAngle', 'min_dSteerAngle'};
 
     % Save as a table
     lapSummary = table('Size', [size(lapSummaryArray,1), length(columnNames)], ...
-        'VariableTypes', {'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
+        'VariableTypes', {'string', 'double', 'double', 'double', 'double', 'double', 'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
+    lapSummary.runID = lapSummaryCell(:,1);
     lapSummary.lapNumber = lapSummaryArray(:,1);
-    lapSummary.avgSteerAngle = lapSummaryArray(:,2);
-    lapSummary.maxSteerAngle = lapSummaryArray(:,3);
-    lapSummary.minSteerAngle = lapSummaryArray(:,4);
-    lapSummary.avg_dSteerAngle = lapSummaryArray(:,5);
-    lapSummary.max_dSteerAngle = lapSummaryArray(:,6);
-    lapSummary.min_dSteerAngle = lapSummaryArray(:,7);
+    lapSummary.lapType = lapSummaryArray(:,2);
+    lapSummary.avgSteerAngle = lapSummaryArray(:,3);
+    lapSummary.maxSteerAngle = lapSummaryArray(:,4);
+    lapSummary.minSteerAngle = lapSummaryArray(:,5);
+    lapSummary.avg_dSteerAngle = lapSummaryArray(:,6);
+    lapSummary.max_dSteerAngle = lapSummaryArray(:,7);
+    lapSummary.min_dSteerAngle = lapSummaryArray(:,8);
 
-
-
+    % Filter by flying laps only
+    lapSummary = lapSummary(lapSummary.lapType == 1, :);
 
 end
