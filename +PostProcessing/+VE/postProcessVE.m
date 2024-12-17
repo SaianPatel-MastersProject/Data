@@ -36,8 +36,12 @@ function postProcessVE(matFilePath, bInterpolated, nPoints, interpMethod)
     % Define the column names
     columnNames = {'vError', 'refVel', 'rCurvature'};
 
+    nRows = size(runStruct.data, 1);
+    nCols = size(columnNames, 1);
+    arrayVE = zeros([nRows, nCols]);
+
     % Create an empty table with the specified column names
-    dataVE = table('Size', [0, length(columnNames)], ...
+    dataVE = table('Size', [nRows, length(columnNames)], ...
         'VariableTypes', {'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
@@ -52,11 +56,15 @@ function postProcessVE(matFilePath, bInterpolated, nPoints, interpMethod)
         currentVel = runStruct.data.speed(i);
         [vError, refVel, rCurvCurrent] = PostProcessing.VE.calculateVelocityError(currentPosition, currentVel, AIW_Data, vMax, vMin);
 
-        dataVE.vError(i) = vError;
-        dataVE.refVel(i) = refVel;
-        dataVE.rCurvature(i) = rCurvCurrent;
+        arrayVE(i,1) = vError;
+        arrayVE(i,2) = refVel;
+        arrayVE(i,3) = rCurvCurrent;
 
     end
+
+    dataVE.vError = arrayVE;
+    dataVE.refVel = arrayVE;
+    dataVE.rCurvature = arrayVE;
 
     % Write the CTE table as a layer
     % Set the .mat filename
