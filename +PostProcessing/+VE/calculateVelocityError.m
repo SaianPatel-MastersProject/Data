@@ -16,10 +16,13 @@ function [vError, refVel, rCurvCurrent] = calculateVelocityError(currentPosition
     % Compute radius of curvature
     rCurvature = 1 ./ curvature;
 
+    % Re-interpolate rCurvature
+    % rCurvature = interp1((1:100)', rCurvature, (linspace(1,100, 10000))', 'spline');
+
     % Map straights to inf
     rCurvature(isinf(rCurvature)) = inf;
     rCurvature = movmean(rCurvature, 5);
-    rCurvature(rCurvature > 200) = 200;
+    % rCurvature(rCurvature > 200) = 200;
     rMin = min(rCurvature);
     rMax = max(rCurvature);
 
