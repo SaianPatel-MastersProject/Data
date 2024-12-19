@@ -62,9 +62,9 @@ function postProcessVE(matFilePath, bInterpolated, nPoints, interpMethod)
 
     end
 
-    dataVE.vError = arrayVE;
-    dataVE.refVel = arrayVE;
-    dataVE.rCurvature = arrayVE;
+    dataVE.vError = arrayVE(:,1);
+    dataVE.refVel = arrayVE(:,2);
+    dataVE.rCurvature = arrayVE(:,3);
 
     % Write the CTE table as a layer
     % Set the .mat filename
