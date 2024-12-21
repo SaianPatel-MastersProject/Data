@@ -1,5 +1,5 @@
-%% Import Neural Network
-net = importNetworkFromONNX("D:\Users\Saian\Workspace\NeuralNetworks\FFNN\Iteration1\SteeringModel_Iteration1b.onnx", "InputDataFormats", "BC");
+%% Import Neural 
+net = importNetworkFromONNX("D:\Users\Saian\Workspace\NeuralNetworks\FFNN\Iteration3\steering_model.onnx", "InputDataFormats", "BC");
 
 %% Import Reference Run
 
@@ -69,16 +69,38 @@ for i = 1:size(runStruct.data, 1)
     dCTEcol = [0; diff(runStruct.data.CTE)];
     dCTE = dCTEcol(i);
     rCurvature = runStruct.data.rCurvature(i);
-    d_rCuravtureCol = [0; diff(runStruct.data.rCurvature)];
-    d_rCurvature = d_rCuravtureCol(i);
 
-    input_i = [CTE, dCTE, rCurvature, d_rCurvature];
+    rLookAhead = [];
+    cLookAhead = [];
+    nLookAhead = 5;
+
+
+
+    for k = 1:nLookAhead
+
+        if i - k <= 0
+
+            rLookAhead(1,k) = runStruct.data.rCurvature(end-k);
+            cLookAhead(1,k) = runStruct.data.CTE(end-k);
+
+        else
+
+            rLookAhead(1,k) = runStruct.data.rCurvature(i-k);
+            cLookAhead(1,k) = runStruct.data.CTE(i-k);
+
+        end
+    end
+
+
+ 
+
+    input_i = [CTE, cLookAhead, rCurvature, rLookAhead];
 
     steeringOutput_i = predict(net, input_i);
 
     % Populate the array
-    NN_Sim_Data(i,2:5) = input_i;
-    NN_Sim_Data(i,6) = steeringOutput_i;
+    NN_Sim_Data(i,2:13) = input_i;
+    NN_Sim_Data(i,14) = steeringOutput_i;
 
 end
 
@@ -87,7 +109,7 @@ figure;
 % subplot(5,1,1)
 plot(NN_Sim_Data(:,1), runStruct.data.steerAngle)
 hold on
-plot(NN_Sim_Data(:,1), NN_Sim_Data(:,6))
+plot(NN_Sim_Data(:,1), NN_Sim_Data(:,14))
 xlabel('Time (s)')
 ylabel('steerAngle')
 

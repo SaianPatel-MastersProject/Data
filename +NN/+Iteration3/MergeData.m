@@ -94,7 +94,36 @@ dataArray = [];
 for i = 1:size(data, 2)
 
     data_i = data(i).runData;
-    dataArray_i = [data_i.CTE, ([0; diff(data_i.CTE)]), data_i.rCurvature, ([0; diff(data_i.rCurvature)]), data_i.steerAngle ];
+
+    rLookAhead = [];
+    cLookAhead = [];
+    nLookAhead = 5;
+
+    for j = 1:size(data_i, 1)
+
+        for k = 1:nLookAhead
+
+            if j + k > size(data_i, 1)
+    
+                rLookAhead(j,k) = data_i.rCurvature(k);
+                cLookAhead(j,k) = data_i.CTE(k);
+
+            elseif j - k <= 0
+
+                rLookAhead(j,k) = data_i.rCurvature(end-k);
+                cLookAhead(j,k) = data_i.CTE(end-k);
+    
+            else
+
+                rLookAhead(j,k) = data_i.rCurvature(j-k);
+                cLookAhead(j,k) = data_i.CTE(j-k);
+    
+            end
+        end
+
+    end
+    
+    dataArray_i = [data_i.CTE, cLookAhead, data_i.rCurvature, rLookAhead, data_i.steerAngle];
 
     if i == 1
 
@@ -111,18 +140,22 @@ end
 
 columnNames = {
     'CTE';
-    'dCTE';
+    'c1';
+    'c2';
+    'c3';
+    'c4';
+    'c5';
     'rCurvature';
-    'd_rCurvature';
+    'r1';
+    'r2';
+    'r3';
+    'r4';
+    'r5';
     'steerAngle';
 };
-
-% trainingData = table('Size', [size(dataArray,1), length(columnNames)], ...
-%         'VariableTypes', {'double', 'double', 'double', 'double', 'double'}, ...
-%         'VariableNames', columnNames);
 
 trainingData = array2table(dataArray, 'VariableNames',columnNames);
 
 %% Export to CSV
 
-writetable(trainingData, '+NN\+Iteration0\TrainingData_Uncapped.csv');
+writetable(trainingData, '+NN\+Iteration3\TrainingData.csv');

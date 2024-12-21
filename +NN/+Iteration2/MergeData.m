@@ -66,7 +66,7 @@ for i = 1:size(runsLaps, 1)
 
      % Only keep flying laps
      runData = runStruct.data(runStruct.data.lapNumber > 0, :);
-     runData = runData(runData.lapNumber < 14, :);
+     runData = runData(runData.lapNumber < 24, :);
 
      % Check current number of entries in the struct
      nEntries = size(data, 2);
@@ -94,7 +94,28 @@ dataArray = [];
 for i = 1:size(data, 2)
 
     data_i = data(i).runData;
-    dataArray_i = [data_i.CTE, ([0; diff(data_i.CTE)]), data_i.rCurvature, ([0; diff(data_i.rCurvature)]), data_i.steerAngle ];
+
+    rLookAhead = [];
+    nLookAhead = 5;
+
+    for j = 1:size(data_i, 1)
+
+        for k = 1:nLookAhead
+
+            if j + k > size(data_i, 1)
+    
+                rLookAhead(j,k) = data_i.rCurvature(k);
+    
+            else
+
+                rLookAhead(j,k) = data_i.rCurvature(j+k);
+    
+            end
+        end
+
+    end
+    
+    dataArray_i = [data_i.CTE, [0; diff(data_i.CTE)], data_i.rCurvature, rLookAhead, data_i.steerAngle];
 
     if i == 1
 
@@ -113,16 +134,16 @@ columnNames = {
     'CTE';
     'dCTE';
     'rCurvature';
-    'd_rCurvature';
+    'r1';
+    'r2';
+    'r3';
+    'r4';
+    'r5';
     'steerAngle';
 };
-
-% trainingData = table('Size', [size(dataArray,1), length(columnNames)], ...
-%         'VariableTypes', {'double', 'double', 'double', 'double', 'double'}, ...
-%         'VariableNames', columnNames);
 
 trainingData = array2table(dataArray, 'VariableNames',columnNames);
 
 %% Export to CSV
 
-writetable(trainingData, '+NN\+Iteration0\TrainingData_Uncapped.csv');
+writetable(trainingData, '+NN\+Iteration2\TrainingData_c.csv');
