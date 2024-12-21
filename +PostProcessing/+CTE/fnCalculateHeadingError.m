@@ -9,6 +9,7 @@ function headingError = fnCalculateHeadingError(AIW_data, x, y)
 
     % Get the heading for each reference point
     thetaRef = atan2(dyRef, dxRef);
+    thetaRef = unwrap(thetaRef);
 
     % Compute gradient of the car's trajectory
     dx = gradient(x);
@@ -16,6 +17,7 @@ function headingError = fnCalculateHeadingError(AIW_data, x, y)
 
     % Get the heading of the car
     theta = atan2(dy, dx);
+    theta = unwrap(theta);
 
     % Initialise a dist2AIW array
     dist2AIW = [];
@@ -48,6 +50,9 @@ function headingError = fnCalculateHeadingError(AIW_data, x, y)
 
 
     end
+
+    % Plot the results
+    figure;
 
 
 
