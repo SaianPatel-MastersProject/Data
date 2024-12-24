@@ -56,7 +56,7 @@ function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
     for i = 1:size(runStruct.data, 1)
 
         currentPoint = [runStruct.data.posX(i), runStruct.data.posY(i), psi(i)];
-        [CTE, closestWaypoint, headingError] = PostProcessing.CTE.FrenetFrame(currentPoint, AIW_Data);
+        [CTE, closestWaypoint, headingError] = PostProcessing.PE.fnCalculatePathError(currentPoint, AIW_Data);
 
         arrayCTE(i) = CTE;
         arrayClosestWaypointX(i) = closestWaypoint(1);
