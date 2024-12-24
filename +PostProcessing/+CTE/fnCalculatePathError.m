@@ -1,4 +1,5 @@
-function [CTE, closestWaypoint, headingError]  = FrenetFrame(currentPose, AIW_Data)
+%% Function to calculate Cross-Track Error (CTE) and Heading Error using Frenet Frames
+function [CTE, closestWaypoint, headingError]  = fnCalculatePathError(currentPose, AIW_Data)
 
     xV = currentPose(1);
     yV = currentPose(2);
