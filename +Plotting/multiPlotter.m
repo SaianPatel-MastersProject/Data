@@ -28,16 +28,32 @@ classdef multiPlotter
             % Read in CTE layers if they exist
             CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
 
-            if isfile(CTEmatFilePath)
+            % if isfile(CTEmatFilePath)
+            % 
+            %     % Load the CTE layer
+            %     load(CTEmatFilePath)
+            % 
+            %     % Join CTE layer to the data for the run
+            %     runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
+            %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+            %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+            % 
+            % 
+            % end
+
+            % Read in PE layers if they exist
+            PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
+
+            if isfile(PEmatFilePath)
 
                 % Load the CTE layer
-                load(CTEmatFilePath)
+                load(PEmatFilePath)
 
                 % Join CTE layer to the data for the run
-                runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
-                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-
+                runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
+                runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+                runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+                runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
 
             end
 
@@ -215,5 +231,6 @@ classdef multiPlotter
 
         end
     
+        
     end
 end
