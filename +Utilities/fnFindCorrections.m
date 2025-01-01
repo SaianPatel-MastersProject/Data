@@ -3,7 +3,7 @@ function nCorrections = fnFindCorrections(y)
 
     % Find corrections by counting crossings of the x-axis of the
     % derivative
-    nCorrections = fnFindXCrosses(diff(y));
+    nCorrections = Utilities.fnFindXCrosses(diff(y));
 
 
 
