@@ -73,12 +73,19 @@ function summary = calculateCTEMetrics(runStruct)
         wIdx = [(dACTE) > 0];
 
         % Get the improvement intergal (signed and unsigned)
-        rCTE_signed = trapz(lapData.tLap(rIdx), lapData.CTE(rIdx));
-        rCTE = trapz(lapData.tLap(rIdx), abs(lapData.CTE(rIdx)));
+        % rCTE_signed = trapz(lapData.tLap(rIdx), lapData.CTE(rIdx));
+        % rCTE = trapz(lapData.tLap(rIdx), abs(lapData.CTE(rIdx)));
+        rRegions = fnFindContinuousRegions(rIdx);
+        rCTE_signed = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, rRegions);
+        rCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), rRegions);
+
 
         % Get the worsening intergal (signed and unsigned)
-        wCTE_signed = trapz(lapData.tLap(wIdx), lapData.CTE(wIdx));
-        wCTE = trapz(lapData.tLap(wIdx), abs(lapData.CTE(wIdx)));
+        % wCTE_signed = trapz(lapData.tLap(wIdx), lapData.CTE(wIdx));
+        % wCTE = trapz(lapData.tLap(wIdx), abs(lapData.CTE(wIdx)));
+        wRegions = fnFindContinuousRegions(wIdx);
+        wCTE_signed = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
+        wCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
 
         % Populate the array
         summary(i,1) = TCTE;
