@@ -329,6 +329,68 @@ classdef multiPlotter
             
             nLaps = size(obj.data, 2);
 
+            % TACTE vs rCTE
+            subplot(2,2,1);
+            hold on
+
+            for i = 1:nLaps
+
+                scatter(obj.data(i).metricsCTE.TACTE, obj.data(i).metricsCTE.rCTE, 'filled');
+
+            end
+
+            xlabel('Total Absolute CTE');
+            ylabel('Improving Absolute CTE');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+            % TACTE vs wCTE
+            subplot(2,2,2);
+            hold on
+
+            for i = 1:nLaps
+
+                scatter(obj.data(i).metricsCTE.TACTE, obj.data(i).metricsCTE.wCTE, 'filled');
+
+            end
+
+            xlabel('Total Absolute CTE');
+            ylabel('Worsening Absolute CTE');
+            grid;
+            grid minor;
+
+            % rCTE vs wCTE
+            subplot(2,2,3);
+            hold on
+
+            for i = 1:nLaps
+
+                scatter(obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, 'filled');
+
+            end
+
+            xlabel('Improving Absolute CTE');
+            ylabel('Worsening Absolute CTE');
+            grid;
+            grid minor;
+
+            % rCTE vs wCTE - Normalised
+            subplot(2,2,4);
+            hold on
+
+            for i = 1:nLaps
+
+                scatter(obj.data(i).metricsCTE.rCTE / obj.data(i).metricsCTE.TACTE, obj.data(i).metricsCTE.wCTE / obj.data(i).metricsCTE.TACTE, 'filled');
+
+            end
+
+            xlabel('Improving Absolute CTE - Normalised');
+            ylabel('Worsening Absolute CTE - Normalised');
+            grid;
+            grid minor;
+
+
 
 
 
