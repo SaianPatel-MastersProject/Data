@@ -82,6 +82,9 @@ function summary = calculateCTEMetrics(runStruct)
         wCTE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
         wCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
 
+        % Calculate r_r,w
+        rRW = rCTE / (rCTE + wCTE);
+
         % Get the number of CTE corrections
         nCorrectionsCTE = fnFindCorrections(lapData.CTE);
 
@@ -98,15 +101,16 @@ function summary = calculateCTEMetrics(runStruct)
         summary(i,4) = rCTE_bias;
         summary(i,5) = wCTE;
         summary(i,6) = wCTE_bias;
-        summary(i,7) = nCorrectionsCTE;
-        summary(i,8) = nCrossesCTE;
-        summary(i,9) = nCorrectionsSteering;
+        summary(i,7) = rRW;
+        summary(i,8) = nCorrectionsCTE;
+        summary(i,9) = nCrossesCTE;
+        summary(i,10) = nCorrectionsSteering;
 
     end
         
 
     % Convert array to table
-    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'};
+    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'rRW'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'};
     summary = array2table(summary, 'VariableNames', columnNames);
         
 
