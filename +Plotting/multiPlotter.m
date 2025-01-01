@@ -13,7 +13,7 @@ classdef multiPlotter
         function obj = multiPlotter()
 
             % Construct class
-            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table);
+            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '');
 
         end
 
@@ -22,8 +22,14 @@ classdef multiPlotter
             % Read in a run .mat file
             load(matFilePath);
 
+            % Get the track
+            track = runStruct.metadata.track;
+
             % Get the runID
             runID = runStruct.metadata.runID;
+
+            % Get the driver
+            driver = runStruct.metadata.driver;
 
             % Read in CTE layers if they exist
             CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
@@ -109,6 +115,8 @@ classdef multiPlotter
             obj.data(i).runID = runID;
             obj.data(i).lapNumber = lapNumber;
             obj.data(i).lapData = lapData;
+            obj.data(i).track = track;
+            obj.data(i).driver = driver;
             
         end
 
@@ -176,7 +184,7 @@ classdef multiPlotter
         end
         
         %% Function for plotting racing line
-        function plotRacingLine(obj)
+        function plotRacingLine(obj, plotAIW)
 
             nLaps = size(obj.data, 2);
 
@@ -186,14 +194,57 @@ classdef multiPlotter
 
             hold on
 
+            legendCell = {};
+
             for i = 1:nLaps
 
                 plot(obj.data(i).lapData.posX, obj.data(i).lapData.posY);
+
+                % Get the runIDs and Laps for legend
+                legend_i = sprintf('%s - L%i - %s', strrep(obj.data(i).runID, '_', '\_'), obj.data(i).lapNumber, obj.data(i).driver);
+
+                % Populate the cell
+                if isempty(legendCell)
+
+                    legendCell{1} = legend_i;
+
+                else
+
+                    legendCell{end+1} = legend_i;
+
+                end
+
+            end
+
+             % Plot the reference AIW if specified
+            if plotAIW
+
+                switch obj.data(1).track
+                    case 'Arrow Speedway'
+
+                        AIW_Table = readtable('+PostProcessing\+CTE\Arrow.csv');
+
+                    case '2kFlat'
+
+                        AIW_Table = readtable('+PostProcessing\+CTE\2kFlat.csv');
+
+                    otherwise
+
+                        % Track not recognised
+                        return;
+
+                end
+
+                plot(AIW_Table.x, AIW_Table.y, 'LineStyle','--', 'Color', 'black');
 
             end
 
             xlabel('X Position');
             ylabel('Y Position');
+
+            
+
+            legend(legendCell);
             
 
         end
