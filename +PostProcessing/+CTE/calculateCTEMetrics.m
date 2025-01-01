@@ -1,46 +1,76 @@
-function summary = calculateCTEMetrics(runStruct)
+function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
 
-    % Get the matfilepath
-    matFilePath = runStruct.metadata.matFilePath;
+    % Check nargin - <2 means lapNumber not given
+    if nargin < 2
 
-    % Read in CTE layers if they exist
-    % CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
-    % 
-    % if isfile(CTEmatFilePath)
-    % 
-    %     % Load the CTE layer
-    %     load(CTEmatFilePath)
-    % 
-    %     % Join CTE layer to the data for the run
-    %     runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
-    %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-    %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-    % 
-    % 
-    % end
+        % Create a boolean for all laps or single lap calc
+        allLaps = true;
 
-    % Read in PE layers if they exist
-    PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
+    else
 
-    if isfile(PEmatFilePath)
+        % If a lap is provided then set allLaps as false
+        allLaps = false;
 
-        % Load the CTE layer
-        load(PEmatFilePath)
+    end
 
-        % Join CTE layer to the data for the run
-        runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
-        runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-        runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-        runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
+    
+    % Get the table column names
+    tableColumns = runStruct.data.Properties.VariableNames;
+
+    % Check if CTE exists, if it doesn't, try to reload layers
+    if ~ismember(tableColumns, 'CTE')
+
+        % Get the matfilepath
+        matFilePath = runStruct.metadata.matFilePath;
+
+        % Read in PE/CTE layers if they exist
+        PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
+        CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
+
+        if isfile(PEmatFilePath)
+
+            % Load the CTE layer
+            load(PEmatFilePath)
+
+            % Join CTE layer to the data for the run
+            runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
+            runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+            runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+            runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
+
+        else
+    
+            if isfile(CTEmatFilePath)
+
+                % Load the CTE layer
+                load(CTEmatFilePath)
+
+                % Join CTE layer to the data for the run
+                runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
+                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+                runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+
+            end
+
+        end
+    
+        
+    end
+
+    % Check again if CTE exists
+    tableColumns = runStruct.data.Properties.VariableNames;
+
+    if ~ismember(tableColumns, 'CTE')
+
+        sprintf('No CTE data found for: %s. \n', runStruct.metadata.runID);
 
     end
 
     % Get the number of laps
     nLaps = size(runStruct.metadata.laps, 2);
 
-
     % Create a summary array
-    summary =zeros([nLaps, 6]);
+    summary = zeros([nLaps, 6]);
 
     % Loop through each lap
     for i = 1:nLaps
@@ -73,26 +103,26 @@ function summary = calculateCTEMetrics(runStruct)
         wIdx = (dACTE) > 0;
 
         % Get the improvement intergal (signed and unsigned)
-        rRegions = fnFindContinuousRegions(rIdx);
-        rCTE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, rRegions);
-        rCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), rRegions);
+        rRegions = Utilities.fnFindContinuousRegions(rIdx);
+        rCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, rRegions);
+        rCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), rRegions);
 
         % Get the worsening intergal (signed and unsigned)
-        wRegions = fnFindContinuousRegions(wIdx);
-        wCTE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
-        wCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
+        wRegions = Utilities.fnFindContinuousRegions(wIdx);
+        wCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
+        wCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
 
         % Calculate r_r,w
         rRW = rCTE / (rCTE + wCTE);
 
         % Get the number of CTE corrections
-        nCorrectionsCTE = fnFindCorrections(lapData.CTE);
+        nCorrectionsCTE = Utilities.fnFindCorrections(lapData.CTE);
 
         % Get the number of CTE=0 crosses
-        nCrossesCTE = fnFindXCrosses(lapData.CTE);
+        nCrossesCTE = Utilities.fnFindXCrosses(lapData.CTE);
 
         % Get the number of steering corrections
-        nCorrectionsSteering = fnFindCorrections(lapData.steerAngle);
+        nCorrectionsSteering = Utilities.fnFindCorrections(lapData.steerAngle);
 
         % Populate the array
         summary(i,1) = TCTE;
@@ -112,7 +142,14 @@ function summary = calculateCTEMetrics(runStruct)
     % Convert array to table
     columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'rRW'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'};
     summary = array2table(summary, 'VariableNames', columnNames);
-        
+    
+    % Filter the table if not in allLaps mode
+    if ~allLaps
+
+        % idx = lapNumber + 1, e.g. L3 is idx 4
+        summary = summary(lapNumber + 1, :);
+
+    end
 
 end
     
