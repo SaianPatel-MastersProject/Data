@@ -14,7 +14,7 @@ classdef multiPlotter
         function obj = multiPlotter()
 
             % Construct class
-            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '');
+            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '', 'metricsCTE', table);
             obj.plottingTools = struct();
 
         end
@@ -33,8 +33,8 @@ classdef multiPlotter
             % Get the driver
             driver = runStruct.metadata.driver;
 
-            % Read in CTE layers if they exist
-            CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
+            %% Read in CTE layers if they exist
+            % CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
 
             % if isfile(CTEmatFilePath)
             % 
@@ -49,7 +49,7 @@ classdef multiPlotter
             % 
             % end
 
-            % Read in PE layers if they exist
+            %% Read in PE layers if they exist
             PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
 
             if isfile(PEmatFilePath)
@@ -65,7 +65,7 @@ classdef multiPlotter
 
             end
 
-            % Read in VE layers if they exist
+            %% Read in VE layers if they exist
             VEmatFilePath = strrep(matFilePath, '.mat', '_VE.mat');
 
             if isfile(VEmatFilePath)
@@ -81,7 +81,7 @@ classdef multiPlotter
 
             end
 
-            % Read in ProMoD layers if they exist
+            %% Read in ProMoD layers if they exist
             ProMoDmatFilePath = strrep(matFilePath, '.mat', '_ProMoD.mat');
 
             if isfile(ProMoDmatFilePath)
@@ -94,7 +94,7 @@ classdef multiPlotter
 
             end
 
-            % Fetch the data for the selected lap
+            %% Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
 
             % Add a tLap Channel
@@ -113,7 +113,10 @@ classdef multiPlotter
 
             end
 
-            % Populate the struct
+            %% Get the CTE metrics summary
+            obj.data(i).metricsCTE = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapNumber);
+
+            %% Populate the struct
             obj.data(i).runID = runID;
             obj.data(i).lapNumber = lapNumber;
             obj.data(i).lapData = lapData;
@@ -157,7 +160,7 @@ classdef multiPlotter
         end
         function plotFundamentals(obj)
             
-            figure; % Create a fundamentals figure
+            figure("Name", 'Fundamentals'); % Create a fundamentals figure
             
             nLaps = size(obj.data, 2);
 
@@ -235,7 +238,7 @@ classdef multiPlotter
 
             nLaps = size(obj.data, 2);
 
-            figure;
+            figure("Name", 'Racing Line');
 
             axis equal
 
@@ -319,6 +322,17 @@ classdef multiPlotter
 
         end
     
-        
+        %% Function for plotting CTE Metrics
+        function plotMetricsCTE(obj)
+
+            figure("Name", 'CTE Metrics'); % Create a CTE Metrics figure
+            
+            nLaps = size(obj.data, 2);
+
+
+
+
+
+        end
     end
 end
