@@ -5,6 +5,7 @@ classdef multiPlotter
     properties
 
         data; % Struct array of lap-by-lap data
+        plottingTools; % Info for plotting
         
 
     end
@@ -14,6 +15,7 @@ classdef multiPlotter
 
             % Construct class
             obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '');
+            obj.plottingTools = struct();
 
         end
 
@@ -117,9 +119,42 @@ classdef multiPlotter
             obj.data(i).lapData = lapData;
             obj.data(i).track = track;
             obj.data(i).driver = driver;
+
+            %% Update Plotting Tools based on the added lap
+            obj = obj.updateLegendCell();
             
         end
 
+        function obj = updateLegendCell(obj)
+
+            nLaps = size(obj.data, 2);
+
+            legendCell = {};
+
+            for i = 1:nLaps
+
+                % Get the runIDs and Laps for legend
+                legend_i = sprintf('%s - L%i - %s', strrep(obj.data(i).runID, '_', '\_'), obj.data(i).lapNumber, obj.data(i).driver);
+
+                % Populate the cell
+                if isempty(legendCell)
+
+                    legendCell{1} = legend_i;
+
+                else
+
+                    legendCell{end+1} = legend_i;
+
+                end
+
+            end
+
+            % Save the legendCell
+            obj.plottingTools.legendCell = legendCell;
+
+
+
+        end
         function plotFundamentals(obj)
             
             figure; % Create a fundamentals figure
@@ -194,25 +229,9 @@ classdef multiPlotter
 
             hold on
 
-            legendCell = {};
-
             for i = 1:nLaps
 
                 plot(obj.data(i).lapData.posX, obj.data(i).lapData.posY);
-
-                % Get the runIDs and Laps for legend
-                legend_i = sprintf('%s - L%i - %s', strrep(obj.data(i).runID, '_', '\_'), obj.data(i).lapNumber, obj.data(i).driver);
-
-                % Populate the cell
-                if isempty(legendCell)
-
-                    legendCell{1} = legend_i;
-
-                else
-
-                    legendCell{end+1} = legend_i;
-
-                end
 
             end
 
@@ -241,11 +260,9 @@ classdef multiPlotter
 
             xlabel('X Position');
             ylabel('Y Position');
-
-            
-
-            legend(legendCell);
-            
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
 
         end
 
