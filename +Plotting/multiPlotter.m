@@ -14,7 +14,7 @@ classdef multiPlotter
         function obj = multiPlotter()
 
             % Construct class
-            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '', 'metricsCTE', table);
+            obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '', 'metricsCTE', table, 'metricsHE', table);
             obj.plottingTools = struct();
 
         end
@@ -115,6 +115,9 @@ classdef multiPlotter
 
             %% Get the CTE metrics summary
             obj.data(i).metricsCTE = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapNumber);
+
+            %% Get the Heading Error metrics sumamry
+            obj.data(i).metricsHE = PostProcessing.PE.calculateHeadingErrorMetrics(runStruct, lapNumber);
 
             %% Populate the struct
             obj.data(i).runID = runID;
