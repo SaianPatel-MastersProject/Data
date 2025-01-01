@@ -1,37 +1,53 @@
-function summary = calculateHeadingErrorMetrics(runStruct)
+function summary = calculateHeadingErrorMetrics(runStruct, lapNumber)
 
-    % Get the matfilepath
-    matFilePath = runStruct.metadata.matFilePath;
+    % Check nargin - <2 means lapNumber not given
+    if nargin < 2
 
-    % Read in CTE layers if they exist
-    % CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
-    % 
-    % if isfile(CTEmatFilePath)
-    % 
-    %     % Load the CTE layer
-    %     load(CTEmatFilePath)
-    % 
-    %     % Join CTE layer to the data for the run
-    %     runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
-    %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-    %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-    % 
-    % 
-    % end
+        % Create a boolean for all laps or single lap calc
+        allLaps = true;
 
-    % Read in PE layers if they exist
-    PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
+    else
 
-    if isfile(PEmatFilePath)
+        % If a lap is provided then set allLaps as false
+        allLaps = false;
 
-        % Load the CTE layer
-        load(PEmatFilePath)
+    end
 
-        % Join CTE layer to the data for the run
-        runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
-        runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-        runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-        runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
+    
+    % Get the table column names
+    tableColumns = runStruct.data.Properties.VariableNames;
+
+    % Check if CTE exists, if it doesn't, try to reload layers
+    if ~ismember(tableColumns, 'HeadingError')
+
+        % Get the matfilepath
+        matFilePath = runStruct.metadata.matFilePath;
+
+        % Read in PE/CTE layers if they exist
+        PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
+
+        if isfile(PEmatFilePath)
+
+            % Load the CTE layer
+            load(PEmatFilePath)
+
+            % Join CTE layer to the data for the run
+            runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
+            runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
+            runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
+            runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
+
+        end
+    
+        
+    end
+
+    % Check again if CTE exists
+    tableColumns = runStruct.data.Properties.VariableNames;
+
+    if ~ismember(tableColumns, 'HeadingError')
+
+        sprintf('No HeadingError data found for: %s. \n', runStruct.metadata.runID);
 
     end
 
@@ -73,26 +89,26 @@ function summary = calculateHeadingErrorMetrics(runStruct)
         wIdx = (dAHE) > 0;
 
         % Get the improvement intergal (signed and unsigned)
-        rRegions = fnFindContinuousRegions(rIdx);
-        rHE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, rRegions);
-        rHE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), rRegions);
+        rRegions = Utilities.fnFindContinuousRegions(rIdx);
+        rHE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, rRegions);
+        rHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), rRegions);
 
         % Get the worsening intergal (signed and unsigned)
-        wRegions = fnFindContinuousRegions(wIdx);
-        wHE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, wRegions);
-        wHE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), wRegions);
+        wRegions = Utilities.fnFindContinuousRegions(wIdx);
+        wHE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, wRegions);
+        wHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), wRegions);
 
         % Calculate r_r,w
         rRW = rHE / (rHE + wHE);
 
         % Get the number of HE corrections
-        nCorrectionsHE = fnFindCorrections(lapData.HeadingError);
+        nCorrectionsHE = Utilities.fnFindCorrections(lapData.HeadingError);
 
         % Get the number of HE=0 crosses
-        nCrossesHE = fnFindXCrosses(lapData.HeadingError);
+        nCrossesHE = Utilities.fnFindXCrosses(lapData.HeadingError);
 
         % Get the number of steering corrections
-        nCorrectionsSteering = fnFindCorrections(lapData.steerAngle);
+        nCorrectionsSteering = Utilities.fnFindCorrections(lapData.steerAngle);
 
         % Populate the array
         summary(i,1) = THE;
@@ -112,6 +128,14 @@ function summary = calculateHeadingErrorMetrics(runStruct)
     % Convert array to table
     columnNames = {'THE'; 'TAHE'; 'rHE'; 'rHE_bias'; 'wHE'; 'wHE_bias'; 'rRW'; 'nCorrcectionsHE'; 'nCrossesHE'; 'nCorrectionsSteering'};
     summary = array2table(summary, 'VariableNames', columnNames);
+
+    % Filter the table if not in allLaps mode
+    if ~allLaps
+
+        % idx = lapNumber + 1, e.g. L3 is idx 4
+        summary = summary(lapNumber + 1, :);
+
+    end
         
 
 end
