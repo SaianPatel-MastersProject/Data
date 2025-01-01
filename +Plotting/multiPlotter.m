@@ -173,6 +173,9 @@ classdef multiPlotter
             
             xlabel('sLap');
             ylabel('Speed (km/h)');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
             
             %% Plot Throttle Application
             subplot(4,1,2);
@@ -186,6 +189,9 @@ classdef multiPlotter
 
             xlabel('sLap');
             ylabel('Throttle');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
             
             %% Plot Brake Application
             subplot(4,1,3);
@@ -199,6 +205,9 @@ classdef multiPlotter
 
             xlabel('sLap');
             ylabel('Brake');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
             
             %% Plot Steering Angle
             subplot(4,1,4);
@@ -212,6 +221,9 @@ classdef multiPlotter
 
             xlabel('sLap');
             ylabel('Steering Angle');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
             
             %% Link Axes
             linkaxes(findall(gcf,'Type','axes'), 'x');
@@ -231,7 +243,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.posX, obj.data(i).lapData.posY);
+                plot(obj.data(i).lapData.posX, obj.data(i).lapData.posY, 'LineWidth', 2);
 
             end
 
@@ -254,12 +266,13 @@ classdef multiPlotter
 
                 end
 
-                plot(AIW_Table.x, AIW_Table.y, 'LineStyle','--', 'Color', 'black');
+                plot(AIW_Table.x, AIW_Table.y, 'LineStyle','--', 'Color', 'black', 'LineWidth', 1);
 
             end
 
             xlabel('X Position');
             ylabel('Y Position');
+            title('Racing Lines')
             legend(obj.plottingTools.legendCell);
             grid;
             grid minor;
@@ -284,6 +297,9 @@ classdef multiPlotter
 
             xlabel('Lap Distance Along Reference');
             ylabel('CTE');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
             
             subplot(2,1,2);
             hold on
@@ -296,6 +312,10 @@ classdef multiPlotter
 
             xlabel('Lap Time (s)');
             ylabel('CTE');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
 
         end
     
