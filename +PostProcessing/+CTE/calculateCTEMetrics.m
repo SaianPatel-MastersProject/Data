@@ -77,11 +77,19 @@ function summary = calculateCTEMetrics(runStruct)
         rCTE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, rRegions);
         rCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), rRegions);
 
-
         % Get the worsening intergal (signed and unsigned)
         wRegions = fnFindContinuousRegions(wIdx);
         wCTE_bias = fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
         wCTE = fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
+
+        % Get the number of CTE corrections
+        nCorrectionsCTE = fnFindCorrections(lapData.CTE);
+
+        % Get the number of CTE=0 crosses
+        nCrossesCTE = fnFindXCrosses(lapData.CTE);
+
+        % Get the number of steering corrections
+        nCorrectionsSteering = fnFindCorrections(lapData.steerAngle);
 
         % Populate the array
         summary(i,1) = TCTE;
@@ -90,12 +98,15 @@ function summary = calculateCTEMetrics(runStruct)
         summary(i,4) = rCTE_bias;
         summary(i,5) = wCTE;
         summary(i,6) = wCTE_bias;
+        summary(i,7) = nCorrectionsCTE;
+        summary(i,8) = nCrossesCTE;
+        summary(i,9) = nCorrectionsSteering;
 
     end
         
 
     % Convert array to table
-    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_signed'; 'wCTE'; 'wCTE_signed'};
+    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'};
     summary = array2table(summary, 'VariableNames', columnNames);
         
 
