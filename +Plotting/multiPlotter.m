@@ -286,6 +286,44 @@ classdef multiPlotter
         end
 
         %% Function for plotting CTE
+        function plotCurvature(obj)
+
+            nLaps = size(obj.data, 2);
+           
+            figure;
+
+            subplot(2,1,1);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.lapDist, 1 ./ obj.data(i).lapData.rCurvature);
+
+            end
+
+            xlabel('Lap Distance (m)');
+            ylabel('Curvature \kappa');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+            
+            subplot(2,1,2);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.steerAngle);
+
+            end
+
+            xlabel('Lap Distance (m)');
+            ylabel('Steer Angle');
+            grid;
+            grid minor;
+
+
+        end
+        %% Function for plotting CTE
         function plotCTE(obj)
 
             nLaps = size(obj.data, 2);
