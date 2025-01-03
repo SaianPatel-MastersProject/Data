@@ -272,7 +272,18 @@ classdef multiPlotter
 
                 end
 
-                plot(AIW_Table.x, AIW_Table.y, 'LineStyle','--', 'Color', 'black', 'LineWidth', 1);
+                nPoints  = 10000;
+                interpMethod = 'spline';
+                
+                AIW_Data = [AIW_Table.x, AIW_Table.y];
+                dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
+                rollingDistance = [0; cumsum(dBetweenPoints)];
+                dNew = (linspace(0, rollingDistance(end), nPoints))';
+                xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
+                yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
+                AIW_Data = [xInterp, yInterp];
+
+                plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', 'black', 'LineWidth', 1);
 
             end
 
