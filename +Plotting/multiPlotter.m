@@ -576,19 +576,35 @@ classdef multiPlotter
         end
 
         %% Function for plotting CTE Metrics
-        function plotBarMetricsCTE(obj)
+        function plotBarMetricsCTE(obj, mode)
 
             figure("Name", 'CTE Metrics Bar Plot');
             
             nLaps = size(obj.data, 2);
 
-            barPlotData = [obj.data(1).metricsCTE.rCTE, obj.data(1).metricsCTE.wCTE, obj.data(1).metricsCTE.hCTE];
+            switch mode
+                case 'Percentage'
 
-            for i = 1:nLaps
+                    barPlotData = [obj.data(1).metricsCTE.rCTE_pct, obj.data(1).metricsCTE.wCTE_pct, obj.data(1).metricsCTE.hCTE_pct];
 
-                barPlotData(i,:) = [obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, obj.data(i).metricsCTE.hCTE];
+                    for i = 1:nLaps
+
+                        barPlotData(i,:) = [obj.data(i).metricsCTE.rCTE_pct, obj.data(i).metricsCTE.wCTE_pct, obj.data(i).metricsCTE.hCTE_pct];
+
+                    end
+
+                case 'Normalised'
+
+                    barPlotData = [obj.data(1).metricsCTE.rCTE, obj.data(1).metricsCTE.wCTE, obj.data(1).metricsCTE.hCTE];
+
+                    for i = 1:nLaps
+
+                        barPlotData(i,:) = [obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, obj.data(i).metricsCTE.hCTE];
+
+                    end
 
             end
+           
 
             barPlot = bar(barPlotData, 'stacked');
 
