@@ -235,6 +235,70 @@ classdef multiPlotter
             linkaxes(findall(gcf,'Type','axes'), 'x');
 
         end
+
+         %% Function for plotting dCTE
+         function plotDerivativesSteeringAngle(obj)
+
+             nLaps = size(obj.data, 2);
+
+             figure("Name", 'Steering & Derivatives');
+
+             steeringScalar = 225;
+
+             subplot(3,1,1);
+             hold on
+
+             for i = 1:nLaps
+
+                 plot(obj.data(i).lapData.tLap, obj.data(i).lapData.steerAngle * steeringScalar);
+
+             end
+
+             xlabel('Lap Time (s)');
+             ylabel('Steering Angle (°)');
+             legend(obj.plottingTools.legendCell);
+             grid;
+             grid minor;
+
+             subplot(3,1,2);
+             hold on
+
+             for i = 1:nLaps
+
+                 % Get dt
+                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+                 dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+                 plot(obj.data(i).lapData.tLap, dSteerAngle);
+
+             end
+
+             xlabel('Lap Time (s)');
+             ylabel('First Derivative of Steering Angle');
+             grid;
+             grid minor;
+
+             subplot(3,1,3);
+             hold on
+
+             for i = 1:nLaps
+
+                 % Get dt
+                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+                 dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+                 ddSteerAngle = [0; diff(dSteerAngle)./ dt];
+
+                 plot(obj.data(i).lapData.tLap, ddSteerAngle);
+
+             end
+
+             xlabel('Lap Time (s)');
+             ylabel('Second Derivative of Steer Angle');
+             grid;
+             grid minor;
+
+             %% Link Axes
+             linkaxes(findall(gcf,'Type','axes'), 'x');
+         end
         
         %% Function for plotting racing line
         function plotRacingLine(obj, plotAIW)
@@ -331,6 +395,70 @@ classdef multiPlotter
             ylabel('Steer Angle');
             grid;
             grid minor;
+
+
+        end
+
+         %% Function for plotting dCTE
+        function plotDerivativesCTE(obj)
+
+            nLaps = size(obj.data, 2);
+           
+            figure("Name", 'CTE & Derivatives');
+
+            subplot(3,1,1);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.CTE);
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('CTE (m)');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+            subplot(3,1,2);
+            hold on
+
+            for i = 1:nLaps
+
+                % Get dt
+                dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+                dCTE = [0; diff(obj.data(i).lapData.CTE)./ dt];
+                plot(obj.data(i).lapData.tLap, dCTE);
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('First Derivative of CTE');
+            grid;
+            grid minor;
+            
+            subplot(3,1,3);
+            hold on
+
+            for i = 1:nLaps
+
+                % Get dt
+                dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+                dCTE = [0; diff(obj.data(i).lapData.CTE)./ dt];
+                ddCTE = [0; diff(dCTE)./ dt];
+
+                plot(obj.data(i).lapData.tLap, ddCTE);
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('Second Derivative of CTE');
+            grid;
+            grid minor;
+
+            %% Link Axes
+            linkaxes(findall(gcf,'Type','axes'), 'x');
 
 
         end
