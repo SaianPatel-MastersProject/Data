@@ -236,7 +236,7 @@ classdef multiPlotter
 
         end
 
-         %% Function for plotting dCTE
+         %% Function for plotting dSteeringAngle
          function plotDerivativesSteeringAngle(obj)
 
              nLaps = size(obj.data, 2);
@@ -428,7 +428,7 @@ classdef multiPlotter
 
                 % Get dt
                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                dCTE = [0; diff(obj.data(i).lapData.CTE)./ dt];
+                dCTE = [0; (diff(obj.data(i).lapData.CTE))./ dt];
                 plot(obj.data(i).lapData.tLap, dCTE);
 
             end
