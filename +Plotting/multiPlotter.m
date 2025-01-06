@@ -299,7 +299,7 @@ classdef multiPlotter
              %% Link Axes
              linkaxes(findall(gcf,'Type','axes'), 'x');
          end
-        
+      
         %% Function for plotting racing line
         function plotRacingLine(obj, plotAIW)
 
@@ -558,6 +558,9 @@ classdef multiPlotter
             % rCTE vs wCTE - Normalised
             subplot(2,2,4);
             hold on
+            xRef = [0, 1];
+            yRef = [0, 1];
+            plot(xRef, yRef, 'LineStyle','--', 'Color','black')
 
             for i = 1:nLaps
 
@@ -570,11 +573,34 @@ classdef multiPlotter
             grid;
             grid minor;
 
+        end
 
+        %% Function for plotting CTE Metrics
+        function plotBarMetricsCTE(obj)
 
+            figure("Name", 'CTE Metrics Bar Plot');
+            
+            nLaps = size(obj.data, 2);
 
+            barPlotData = [obj.data(1).metricsCTE.rCTE, obj.data(1).metricsCTE.wCTE, obj.data(1).metricsCTE.hCTE];
 
+            for i = 1:nLaps
 
+                barPlotData(i,:) = [obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, obj.data(i).metricsCTE.hCTE];
+
+            end
+
+            barPlot = bar(barPlotData, 'stacked');
+
+            barPlot(1).FaceColor = [0 1 0];
+            barPlot(2).FaceColor = [1 0 0];
+            barPlot(3).FaceColor = [0 0 1];
+
+            xticklabels(obj.plottingTools.legendCell);
+
+            legend({'Improving', 'Worsening', 'Held'})
+
+        
         end
     end
 end
