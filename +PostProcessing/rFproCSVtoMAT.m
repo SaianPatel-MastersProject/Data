@@ -237,10 +237,18 @@ classdef rFproCSVtoMAT
             eventFolder = fullfile('+ProcessedData', obj.metadata.year, obj.metadata.event);
             
             % Check that the folder exists
-            if ~isdir(eventFolder)
+            if ~isfolder(eventFolder)
 
-                display('Event folder does not exist.');
-                return;
+                sprintf('Event folder (%s) does not exist.', eventFolder);
+                
+                fprintf('Trying previous year.');
+
+                eventFolder = strrep(eventFolder, '2025', '2024');
+
+                if ~isfolder(eventFolder)
+                    sprintf('Event folder (%s) does not exist.', eventFolder);
+                    return;
+                end
 
             end
 
