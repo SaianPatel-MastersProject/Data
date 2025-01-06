@@ -97,20 +97,35 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         TACTE = trapz(lapData.tLap, abs(lapData.CTE));
 
         % Find where absolute CTE is improving (dCTE < 0)
-        rIdx = (dACTE) < 0;
+        rIdx = (dACTE) < -0.1;
 
         % Find where absolute CTE is worsening (dCTE > 0)
-        wIdx = (dACTE) > 0;
+        wIdx = (dACTE) > 0.1;
 
         % Get the improvement intergal (signed and unsigned)
         rRegions = Utilities.fnFindContinuousRegions(rIdx);
         rCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, rRegions);
         rCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), rRegions);
+        rCTE_pct = (sum(rIdx)/length(rIdx))*100;
 
         % Get the worsening intergal (signed and unsigned)
         wRegions = Utilities.fnFindContinuousRegions(wIdx);
         wCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, wRegions);
         wCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), wRegions);
+        wCTE_pct = (sum(wIdx)/length(wIdx))*100;
+
+        % Get the percentage of points at zero derivative
+        hIdx = and(~rIdx, ~wIdx);
+        hCTE_pct = 100 - (rCTE_pct + wCTE_pct);
+
+        % Sanity plot
+        % figure("Name", 'Sanity Check');
+        % hold on
+        % plot(lapData.tLap, lapData.CTE, 'LineStyle','--', 'Color', 'black');
+        % scatter(lapData.tLap(rIdx), lapData.CTE(rIdx), 'filled', 'MarkerFaceColor', 'green');
+        % scatter(lapData.tLap(wIdx), lapData.CTE(wIdx), 'filled', 'MarkerFaceColor', 'red');
+        % scatter(lapData.tLap(hIdx), lapData.CTE(hIdx), 'filled', 'MarkerFaceColor', 'blue');
+
 
         % Calculate r_r,w
         rRW = rCTE / (rCTE + wCTE);
@@ -135,12 +150,15 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         summary(i,8) = nCorrectionsCTE;
         summary(i,9) = nCrossesCTE;
         summary(i,10) = nCorrectionsSteering;
+        summary(i,11) = rCTE_pct;
+        summary(i,12) = wCTE_pct;
+        summary(i,13) = hCTE_pct;
 
     end
         
 
     % Convert array to table
-    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'rRW'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'};
+    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'rRW'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'; 'rCTE_pct'; 'wCTE_pct'; 'hCTE_pct'};
     summary = array2table(summary, 'VariableNames', columnNames);
     
     % Filter the table if not in allLaps mode
