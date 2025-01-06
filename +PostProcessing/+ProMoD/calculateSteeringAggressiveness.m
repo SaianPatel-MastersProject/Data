@@ -1,8 +1,11 @@
 function MSteer = calculateSteeringAggressiveness(runStruct)
 
-    % Set maximum and minimum steering angles to define normal cornering
-    deltaMax = 1;
-    deltaMin = 0.1;
+    % Set maximum and minimum steering angles (deg) to define normal cornering
+    deltaMax = 225;
+    deltaMin = 0;
+
+    % Specify steering scalar (Steering at 1 is 225 deg)
+    steeringScalar = 225;
 
     % Get the number of laps
     nLaps = size(runStruct.metadata.laps, 2);
@@ -19,8 +22,11 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
         % Create a lap time channel
         lapData.lapTime = lapData.time - lapData.time(1);
 
+        % Get dt
+        dt = lapData.lapTime(2) - lapData.lapTime(1);
+
         % Get the 'cornering' data
-        corneringLapData = lapData(abs(lapData.steerAngle) > deltaMin & abs(lapData.steerAngle) <= deltaMax, :);
+        corneringLapData = lapData(abs(lapData.steerAngle * steeringScalar ) > deltaMin & abs(lapData.steerAngle* steeringScalar) <= deltaMax, :);
 
         % Get the change in time for the corner segments
         tSegment = [0; diff(corneringLapData.lapTime)];
@@ -103,7 +109,7 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
             totalCorneringDuration = size(cornerLapData,1)*0.01;
 
             % Get the steering angle velocity
-            steerAngleVelocity = [0; diff(cornerLapData.steerAngle)];
+            steerAngleVelocity = [0; diff(cornerLapData.steerAngle * steeringScalar) ./ dt];
 
             % Get the absolute steering angle velocity
             absSteerAngleVelocity = abs(steerAngleVelocity);
