@@ -486,7 +486,7 @@ classdef multiPlotter
 
                 % Get dt
                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                dCTE = [0; (diff(abs(obj.data(i).lapData.CTE)))./ dt];
+                dCTE = [0; (diff((obj.data(i).lapData.CTE)))./ dt];
                 plot(obj.data(i).lapData.tLap, dCTE);
 
             end
@@ -503,7 +503,7 @@ classdef multiPlotter
 
                 % Get dt
                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                dCTE = [0; (diff(abs(obj.data(i).lapData.CTE)))./ dt];
+                dCTE = [0; (diff((obj.data(i).lapData.CTE)))./ dt];
                 ddCTE = [0; diff(dCTE)./ dt];
 
                 plot(obj.data(i).lapData.tLap, ddCTE);
@@ -888,6 +888,48 @@ classdef multiPlotter
             xlabel('Lap')
             ylabel('CTE (m)')
             title('CTE Box Plot')
+
+        end
+
+        %% Function to plot Steering box plot
+        function plotBoxSteering(obj)
+
+            nLaps = size(obj.data, 2);
+
+            % Plot a boxplot
+            figure("Name", 'Steering Box Plot');
+
+            % Flatten for the boxplot
+            x = [];
+            g = {};
+            for i = 1:nLaps
+
+                g_i = {};
+                x_i = obj.data(i).lapData.steerAngle * 225;
+                n_i = numel(x_i);
+                for j = 1:n_i
+                    g_i{j, 1} = sprintf('%i', i);
+                end
+
+                if i == 1
+
+                    x = x_i;
+                    g = g_i;
+
+                else
+
+                    x = [x; x_i];
+                    g = vertcat(g, g_i);
+
+                end
+
+            end
+
+            boxplot(x, g)
+            xticklabels(obj.plottingTools.legendCell);
+            xlabel('Lap')
+            ylabel('Steering Angle (deg)')
+            title('Steering Box Plot')
 
         end
     end
