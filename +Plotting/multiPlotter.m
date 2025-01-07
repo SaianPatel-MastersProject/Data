@@ -618,5 +618,36 @@ classdef multiPlotter
 
         
         end
+    
+        %% Function for plotting smoothness Metrics
+        function plotSmoothnessMetrics(obj)
+
+            nLaps = size(obj.data, 2);
+           
+            figure("Name", 'Smoothness Metrics');
+
+            hold on
+
+            for i = 1:nLaps
+
+                % Calculate Smoothness of Steering
+                MSteer = PostProcessing.ProMoD.calculateSmoothnessMetric(obj.data(i).lapData, 'steerAngle');
+
+                % Calculate Smoothness of CTE
+                MCTE = PostProcessing.ProMoD.calculateSmoothnessMetric(obj.data(i).lapData, 'CTE');
+
+                scatter(MCTE, MSteer, 'filled');
+
+            end
+
+            xlabel('M_c');
+            ylabel('M_s');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+            
+          
+
+        end
     end
 end
