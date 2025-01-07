@@ -413,8 +413,11 @@ classdef multiPlotter
             grid;
             grid minor;
 
+            %% Link Axes
+             linkaxes(findall(gcf,'Type','axes'), 'x');
+
         end
-        
+
         %% Function for plotting CTE
         function plotCurvature(obj)
 
@@ -483,7 +486,7 @@ classdef multiPlotter
 
                 % Get dt
                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                dCTE = [0; (diff(obj.data(i).lapData.CTE))./ dt];
+                dCTE = [0; (diff(abs(obj.data(i).lapData.CTE)))./ dt];
                 plot(obj.data(i).lapData.tLap, dCTE);
 
             end
@@ -500,7 +503,7 @@ classdef multiPlotter
 
                 % Get dt
                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                dCTE = [0; diff(obj.data(i).lapData.CTE)./ dt];
+                dCTE = [0; (diff(abs(obj.data(i).lapData.CTE)))./ dt];
                 ddCTE = [0; diff(dCTE)./ dt];
 
                 plot(obj.data(i).lapData.tLap, ddCTE);
@@ -703,6 +706,98 @@ classdef multiPlotter
             grid minor;
             
           
+
+        end
+
+        %% Function to plot 'Reaction Time'
+        function rTimeStruct = plotCorrectionTime(obj)
+
+            nLaps = size(obj.data, 2);
+
+            % Create a struct of reaction times and corresponding indices
+            rTimeStruct = struct('xCTE', [], 'xSteer', [], 'rT', []);
+
+            for i = 1:nLaps
+
+                % Find where the CTE switches from improving to worsening
+                [~, xCrossesCTE] = Utilities.fnFindXCrosses(obj.data(i).lapData.CTE);
+
+                % Find where the steering is corrected
+                [~, xCrossesSteer] = Utilities.fnFindXCrosses(diff(obj.data(i).lapData.steerAngle));
+
+                nextIdx = [];
+                tReact = [];
+
+                for j = 1:numel(xCrossesCTE)
+
+                    idxDiff = xCrossesSteer - xCrossesCTE(j);
+
+                    idxDiff = idxDiff(idxDiff > 0);
+
+                    [jj, ~] = min(idxDiff);
+
+                    nextIdx(j,1) = jj + xCrossesCTE(j);
+
+                    tReact(j,1) = jj * 0.01;
+
+                end
+
+                rTimeStruct(i).xCTE = xCrossesCTE;
+                rTimeStruct(i).xSteer = nextIdx;
+                rTimeStruct(i).rT = tReact;
+
+            end
+           
+            figure("Name", 'Correction Time');
+            
+            % Steering Angle
+            subplot(2,1,1)
+            hold on
+            
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.steerAngle)
+            
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('Steering Angle (deg)');
+            grid;
+            grid minor;
+
+            for i = 1:nLaps
+
+                 % Overlay Corrections
+                scatter(obj.data(i).lapData.tLap(rTimeStruct(i).xCTE), obj.data(i).lapData.steerAngle(rTimeStruct(i).xCTE), 'filled', 'MarkerFaceColor','red', 'SizeData', 16);
+                scatter(obj.data(i).lapData.tLap(rTimeStruct(i).xSteer), obj.data(i).lapData.steerAngle(rTimeStruct(i).xSteer), 'filled', 'MarkerFaceColor','green', 'SizeData', 16);
+
+            end
+
+            % CTE
+            subplot(2,1,2)
+            hold on
+            
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.CTE)
+            
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('CTE (m)');
+            grid;
+            grid minor;
+
+            for i = 1:nLaps
+
+                 % Overlay Corrections
+                scatter(obj.data(i).lapData.tLap(rTimeStruct(i).xCTE), obj.data(i).lapData.CTE(rTimeStruct(i).xCTE), 'filled', 'MarkerFaceColor','red', 'SizeData', 16);
+                scatter(obj.data(i).lapData.tLap(rTimeStruct(i).xSteer), obj.data(i).lapData.CTE(rTimeStruct(i).xSteer), 'filled', 'MarkerFaceColor','green', 'SizeData', 16);
+
+            end
+
+            %% Link Axes
+            linkaxes(findall(gcf,'Type','axes'), 'x');
 
         end
     end
