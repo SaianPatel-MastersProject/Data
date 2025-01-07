@@ -121,8 +121,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         % Get the held intergal (signed and unsigned)
         hRegions = Utilities.fnFindContinuousRegions(hIdx);
         hCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, hRegions);
-        hCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), hRegions) / TACTE;
-        % hCTE = 1 - (rCTE + wCTE);
+        % hCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), hRegions) / TACTE;
+        hCTE = 1 - (rCTE + wCTE);
         hCTE_pct = 100 - (rCTE_pct + wCTE_pct);
 
         % Sanity plot
@@ -149,24 +149,46 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         % Populate the array
         summary(i,1) = TCTE;
         summary(i,2) = TACTE;
-        summary(i,3) = rCTE;
-        summary(i,4) = rCTE_bias;
-        summary(i,5) = wCTE;
-        summary(i,6) = wCTE_bias;
-        summary(i,7) = rRW;
-        summary(i,8) = nCorrectionsCTE;
-        summary(i,9) = nCrossesCTE;
-        summary(i,10) = nCorrectionsSteering;
-        summary(i,11) = rCTE_pct;
-        summary(i,12) = wCTE_pct;
-        summary(i,13) = hCTE_pct;
-        summary(i,14) = hCTE;
+        summary(i,3) = mean(lapData.CTE);
+        summary(i,4) = mean(abs(lapData.CTE));
+        summary(i,5) = rCTE;
+        summary(i,6) = wCTE;
+        summary(i,7) = hCTE;
+        summary(i,8) = rRW;
+        summary(i,9) = rCTE_bias;
+        summary(i,10) = wCTE_bias;
+        summary(i,11) = hCTE_bias;
+        summary(i,12) = rCTE_pct;
+        summary(i,13) = wCTE_pct;
+        summary(i,14) = hCTE_pct;
+        summary(i,15) = nCorrectionsCTE;
+        summary(i,16) = nCrossesCTE;
+        summary(i,17) = nCorrectionsSteering;
 
     end
         
 
     % Convert array to table
-    columnNames = {'TCTE'; 'TACTE'; 'rCTE'; 'rCTE_bias'; 'wCTE'; 'wCTE_bias'; 'rRW'; 'nCorrcectionsCTE'; 'nCrossesCTE'; 'nCorrectionsSteering'; 'rCTE_pct'; 'wCTE_pct'; 'hCTE_pct'; 'hCTE'};
+    columnNames = {
+        'TCTE';...
+        'TACTE';...
+        'CTE_avg';...
+        'ACTE_avg';...
+        'rCTE';...
+        'wCTE';...
+        'hCTE';...
+        'rRW';...
+        'rCTE_bias';...
+        'wCTE_bias';...
+        'hCTE_bias';...
+        'rCTE_pct';...
+        'wCTE_pct';...
+        'hCTE_pct';...
+        'nCorrectionsCTE';...
+        'nCrossesCTE';...
+        'nCorrectionSteering'
+    };
+
     summary = array2table(summary, 'VariableNames', columnNames);
     
     % Filter the table if not in allLaps mode
