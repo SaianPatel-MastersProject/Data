@@ -103,8 +103,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         wIdx = (dACTE) > 0.1;
 
         % Find where absolute CTE is held
-        % hIdx = and(~rIdx, ~wIdx);
-        hIdx = (dACTE) > -0.1 & (dACTE) < 0.1;
+        hIdx = and(~rIdx, ~wIdx);
+        % hIdx = (dACTE) > -0.1 & (dACTE) < 0.1;
 
         % Get the improvement intergal (signed and unsigned)
         rRegions = Utilities.fnFindContinuousRegions(rIdx);
@@ -122,6 +122,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         hRegions = Utilities.fnFindContinuousRegions(hIdx);
         hCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, hRegions);
         hCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), hRegions) / TACTE;
+        % hCTE = 1 - (rCTE + wCTE);
         hCTE_pct = 100 - (rCTE_pct + wCTE_pct);
 
         % Sanity plot
