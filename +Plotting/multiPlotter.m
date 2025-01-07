@@ -848,5 +848,47 @@ classdef multiPlotter
             
 
         end
+
+        %% Function to plot CTE box plot
+        function plotBoxCTE(obj)
+
+            nLaps = size(obj.data, 2);
+
+            % Plot a boxplot
+            figure("Name", 'CTE Box Plot');
+
+            % Flatten for the boxplot
+            x = [];
+            g = {};
+            for i = 1:nLaps
+
+                g_i = {};
+                x_i = obj.data(i).lapData.CTE;
+                n_i = numel(x_i);
+                for j = 1:n_i
+                    g_i{j, 1} = sprintf('%i', i);
+                end
+
+                if i == 1
+
+                    x = x_i;
+                    g = g_i;
+
+                else
+
+                    x = [x; x_i];
+                    g = vertcat(g, g_i);
+
+                end
+
+            end
+
+            boxplot(x, g)
+            xticklabels(obj.plottingTools.legendCell);
+            xlabel('Lap')
+            ylabel('CTE (m)')
+            title('CTE Box Plot')
+
+        end
     end
 end
