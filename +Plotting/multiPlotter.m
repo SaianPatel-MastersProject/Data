@@ -360,6 +360,61 @@ classdef multiPlotter
 
         end
 
+        %% Function for plotting errors with steering
+        function plotErrorsWithSteering(obj)
+
+            figure("Name", 'Fundamentals'); % Create a fundamentals figure
+            
+            nLaps = size(obj.data, 2);
+
+            % Plot Steering
+            subplot(3,1,1);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.steerAngle * 225);
+
+            end
+            
+            xlabel('Lap Time (s)');
+            ylabel('Steering Angle (deg)');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+            
+            % Plot CTE
+            subplot(3,1,2);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.CTE);
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('CTE (m)');
+            grid;
+            grid minor;
+            
+            % Plot Heading Error
+            subplot(3,1,3);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, rad2deg(obj.data(i).lapData.HeadingError));
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('Heading Error (deg)');
+            grid;
+            grid minor;
+
+        end
+        
         %% Function for plotting CTE
         function plotCurvature(obj)
 
@@ -462,6 +517,7 @@ classdef multiPlotter
 
 
         end
+        
         %% Function for plotting CTE
         function plotCTE(obj)
 
