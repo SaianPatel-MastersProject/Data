@@ -141,7 +141,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         nCorrectionsCTE = Utilities.fnFindCorrections(lapData.CTE);
 
         % Get the number of CTE=0 crosses
-        nCrossesCTE = Utilities.fnFindXCrosses(lapData.CTE);
+        [nCrossesCTE, ~] = Utilities.fnFindXCrosses(lapData.CTE);
 
         % Get the number of steering corrections
         nCorrectionsSteering = Utilities.fnFindCorrections(lapData.steerAngle);

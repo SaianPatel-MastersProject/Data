@@ -1,11 +1,11 @@
 %% Function to count the number of crosses through the x-axis
-function xCrosses = fnFindXCrosses(y)
+function [nCrosses, idxCrosses] = fnFindXCrosses(y)
 
     % Find zero-crossings
-    zeroCrossings = find(diff(sign(y)) ~= 0);
+    idxCrosses = find(diff(sign(y)) ~= 0);
 
     % Count the crossings
-    xCrosses = length(zeroCrossings);
+    nCrosses = length(idxCrosses);
 
 
 end
