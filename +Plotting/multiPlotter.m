@@ -623,7 +623,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                scatter(obj.data(i).metricsCTE.rCTE / obj.data(i).metricsCTE.TACTE, obj.data(i).metricsCTE.wCTE / obj.data(i).metricsCTE.TACTE, 'filled');
+                scatter(obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, 'filled');
 
             end
 
@@ -720,7 +720,9 @@ classdef multiPlotter
             for i = 1:nLaps
 
                 % Find where the CTE switches from improving to worsening
-                [~, xCrossesCTE] = Utilities.fnFindXCrosses(obj.data(i).lapData.CTE);
+                dACTE = diff(abs(obj.data(i).lapData.CTE)) ./ 0.01;
+                dACTE = dACTE(dACTE > 0.1 | dACTE < -0.1);
+                [~, xCrossesCTE] = Utilities.fnFindXCrosses(dACTE);
 
                 % Find where the steering is corrected
                 [~, xCrossesSteer] = Utilities.fnFindXCrosses(diff(obj.data(i).lapData.steerAngle));
@@ -736,14 +738,24 @@ classdef multiPlotter
 
                     [jj, ~] = min(idxDiff);
 
-                    nextIdx(j,1) = jj + xCrossesCTE(j);
+                    try
 
-                    tReact(j,1) = jj * 0.01;
+                        nextIdx(j,1) = jj + xCrossesCTE(j);
+    
+                        tReact(j,1) = jj * 0.01;
+                    catch ME
+
+                        nextIdx(j,1) = NaN;
+    
+                        tReact(j,1) = NaN;
+
+
+                    end
 
                 end
 
                 rTimeStruct(i).xCTE = xCrossesCTE;
-                rTimeStruct(i).xSteer = nextIdx;
+                rTimeStruct(i).xSteer = unique(nextIdx);
                 rTimeStruct(i).rT = tReact;
 
             end
@@ -798,6 +810,42 @@ classdef multiPlotter
 
             %% Link Axes
             linkaxes(findall(gcf,'Type','axes'), 'x');
+
+            %% Plot a boxplot
+            figure("Name", 'Correction Time Box Plot');
+
+            % Flatten for the boxplot
+            x = [];
+            g = {};
+            for i = 1:nLaps
+
+                g_i = {};
+                x_i = rTimeStruct(i).rT;
+                n_i = numel(x_i);
+                for j = 1:n_i
+                    g_i{j, 1} = sprintf('%i', i);
+                end
+
+                if i == 1
+
+                    x = x_i;
+                    g = g_i;
+
+                else
+
+                    x = [x; x_i];
+                    g = vertcat(g, g_i);
+
+                end
+
+            end
+
+            boxplot(x, g)
+            xticklabels(obj.plottingTools.legendCell);
+            xlabel('Lap')
+            ylabel('Correction Time (s)')
+            title('Correction Time Box Plot')
+            
 
         end
     end
