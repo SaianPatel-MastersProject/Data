@@ -19,7 +19,7 @@ function MChannel = calculateSmoothnessMetric(data, channel)
     nLaps = numel(lapsInData);
 
     % Display to user
-    fprintf('There are %i laps in the data.\n', nLaps)
+    fprintf('There are %i lap(s) in the data.\n', nLaps)
 
     % Initilaise MChannel
     MChannel = [];
@@ -64,6 +64,12 @@ function MChannel = calculateSmoothnessMetric(data, channel)
             case 'CTE'
 
                 y = channelData;
+                y = [0; diff(y) ./ dt];
+                y = abs(y);
+
+            case 'HeadingError'
+
+                y = rad2deg(channelData);
                 y = [0; diff(y) ./ dt];
                 y = abs(y);
 
