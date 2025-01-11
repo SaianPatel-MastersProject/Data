@@ -11,7 +11,7 @@ function [vError, refVel, rCurvCurrent] = calculateVelocityError(currentPosition
     ddy = gradient(dy);
 
     % Compute curvature
-    curvature = abs(dx .* ddy - dy .* ddx) ./ (dx.^2 + dy.^2).^(3/2);
+    curvature = (dx .* ddy - dy .* ddx) ./ (dx.^2 + dy.^2).^(3/2);
 
     % Compute radius of curvature
     rCurvature = 1 ./ curvature;
