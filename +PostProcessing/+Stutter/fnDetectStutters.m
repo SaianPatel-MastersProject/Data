@@ -10,7 +10,7 @@ function [nStutter, stutterIdx] = fnDetectStutters(data)
     vCar = data.speed;
 
     % Check whether the car is moving
-    bMoving = vCar > 0.01;
+    bMoving = vCar > 0.1;
 
     % Get the diff of each
     dX = diff(x);
