@@ -13,7 +13,7 @@ function fixedData = fnFixStutters(data, stutterIdx, freq)
     % Create a new timestep
     t = dt .* (1:nEntries)';
 
-    fixedData.tLap_fixed = t;
+    fixedData.time = t;
 
 
 
