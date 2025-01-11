@@ -9,9 +9,10 @@ function [kappa, rCurvature] = fnCalculateCurvature(AIW_Data)
 
     % Compute curvature
     curvature = abs(dx .* ddy - dy .* ddx) ./ (dx.^2 + dy.^2).^(3/2);
+    curvature_signed = (dx .* ddy - dy .* ddx) ./ (dx.^2 + dy.^2).^(3/2);
 
     % Compute radius of curvature
-    rCurvature = 1 ./ curvature;
+    rCurvature = 1 ./ curvature_signed;
 
     % Re-interpolate rCurvature
     % rCurvature = interp1((1:100)', rCurvature, (linspace(1,100, 10000))', 'spline');
