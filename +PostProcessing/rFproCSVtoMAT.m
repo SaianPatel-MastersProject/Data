@@ -38,6 +38,12 @@ classdef rFproCSVtoMAT
             };
 
             obj.data = rawData(:, channelsToKeep');
+            % 
+            % zz = PostProcessing.Stutter.fnFixTimeChannel(obj.data);
+            % 
+            % % Remove stutters
+            % [~, stutterIdx] = PostProcessing.Stutter.fnDetectStutters(obj.data);
+            % obj.data = PostProcessing.Stutter.fnFixStutters(obj.data, stutterIdx, 100);
 
             % Store the filepath
             obj.metadata.filePath = csvFilePath;
