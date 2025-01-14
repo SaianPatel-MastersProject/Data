@@ -360,6 +360,44 @@ classdef multiPlotter
 
         end
 
+        %% Function for plotting steering
+        function plotSteering(obj)
+
+            nLaps = size(obj.data, 2);
+
+            figure("Name", 'Steering Trace');
+
+            subplot(2,1,1)
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.steerAngle .* 225);
+
+            end
+
+            xlabel('Lap Distance (m)');
+            ylabel('Steering Angle (deg)');
+            title('Steering Trace')
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+            subplot(2,1,2)
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.steerAngle .* 225);
+
+            end
+
+            xlabel('Lap Time (s)');
+            ylabel('Steering Angle (deg)');
+            grid;
+            grid minor;
+
+        end
         %% Function for plotting errors with steering
         function plotErrorsWithSteering(obj)
 
