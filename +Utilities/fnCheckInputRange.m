@@ -13,7 +13,7 @@ function [bOutOfRange] = fnCheckInputRange(trainingInputs, dataInputs)
         minVal = table2array(min(trainingInputs(:,i)));
 
         % Check out of bounds data
-        bOutOfRange(:,1) = and(dataInputs(:,i) < minVal , dataInputs(:,i) > maxVal);
+        bOutOfRange(:,1) = or(dataInputs(:,i) < minVal , dataInputs(:,i) > maxVal);
 
     end
 
