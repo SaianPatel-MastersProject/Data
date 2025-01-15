@@ -657,13 +657,15 @@ classdef multiPlotter
             hold on
             xRef = [0, 1];
             yRef = [0, 1];
-            plot(xRef, yRef, 'LineStyle','--', 'Color','black')
-
+            
             for i = 1:nLaps
 
                 scatter(obj.data(i).metricsCTE.rCTE, obj.data(i).metricsCTE.wCTE, 'filled');
 
             end
+
+            plot(xRef, yRef, 'LineStyle','--', 'Color','black')
+
 
             xlabel('Improving Absolute CTE - Normalised');
             ylabel('Worsening Absolute CTE - Normalised');
