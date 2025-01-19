@@ -31,11 +31,11 @@ function [nStutter, stutterIdx] = fnDetectStutters(data)
 
     if nStutter == 0
 
-        fprintf('There are no stutters in the data.');
+        fprintf('There are no stutters in the data. \n');
 
     else
 
-        fprintf('There are %i stutter(s) in the data.', nStutter);
+        fprintf('There are %i stutter(s) in the data. \n', nStutter);
 
     end
 
