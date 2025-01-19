@@ -38,13 +38,42 @@ classdef rFproCSVtoMAT
             };
 
             obj.data = rawData(:, channelsToKeep');
-            % 
-            % zz = PostProcessing.Stutter.fnFixTimeChannel(obj.data);
-            % 
-            % % Remove stutters
-            % [~, stutterIdx] = PostProcessing.Stutter.fnDetectStutters(obj.data);
-            % obj.data = PostProcessing.Stutter.fnFixStutters(obj.data, stutterIdx, 100);
 
+            % Get the number of laps in the run
+            lapsInRun = unique(obj.data.lapNumber);
+            nLaps = numel(lapsInRun);
+
+            for i = 1:nLaps
+
+                % Get lapData
+                lapData = obj.data(obj.data.lapNumber == lapsInRun(i), :);
+
+                % Only fix stutters for flying laps
+                if and(i > 1, i < nLaps)
+
+                    % Remove stutters (lap-by-lap basis)
+                    [~, stutterIdx] = PostProcessing.Stutter.fnDetectStutters(lapData);
+                    lapData = PostProcessing.Stutter.fnFixStutters(lapData, stutterIdx, 100);
+
+                end
+
+                % Stack the data
+                if i == 1
+                
+                    newData = lapData;
+
+                else
+
+                    newData = [newData; lapData];
+
+
+                end
+
+            end
+
+            % Overwrite with stutter fix
+            obj.data = newData;
+            
             % Store the filepath
             obj.metadata.filePath = csvFilePath;
 
