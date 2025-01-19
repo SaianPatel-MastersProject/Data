@@ -35,6 +35,10 @@ function fixedData = fnFixStutters(data, stutterIdx, freq)
     y = table2array(y);
     fixedData = interp1(tInterp, y, tQuery);
 
+    % Re-create the table
+    fixedData = [tQuery, fixedData];
+    fixedData = array2table(fixedData, 'VariableNames', data.Properties.VariableNames);
+
 
 
 
