@@ -88,66 +88,10 @@ classdef multiPlotter
             % Get the driver
             driver = runStruct.metadata.driver;
 
-            %% Read in CTE layers if they exist
-            % CTEmatFilePath = strrep(matFilePath, '.mat', '_CTE.mat');
-
-            % if isfile(CTEmatFilePath)
-            % 
-            %     % Load the CTE layer
-            %     load(CTEmatFilePath)
-            % 
-            %     % Join CTE layer to the data for the run
-            %     runStruct.data = addvars(runStruct.data, dataCTE.CTE, 'NewVariableNames', 'CTE');
-            %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-            %     runStruct.data = addvars(runStruct.data, dataCTE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-            % 
-            % 
-            % end
-
-            %% Read in PE layers if they exist
-            PEmatFilePath = strrep(matFilePath, '.mat', '_PE.mat');
-
-            if isfile(PEmatFilePath)
-
-                % Load the CTE layer
-                load(PEmatFilePath)
-
-                % Join CTE layer to the data for the run
-                runStruct.data = addvars(runStruct.data, dataPE.CTE, 'NewVariableNames', 'CTE');
-                runStruct.data = addvars(runStruct.data, dataPE.closestWaypointX, 'NewVariableNames', 'closestWaypointX');
-                runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
-                runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
-
-            end
-
-            %% Read in VE layers if they exist
-            VEmatFilePath = strrep(matFilePath, '.mat', '_VE.mat');
-
-            if isfile(VEmatFilePath)
-
-                % Load the CTE layer
-                load(VEmatFilePath)
-
-                % Join CTE layer to the data for the run
-                runStruct.data = addvars(runStruct.data, dataVE.vError, 'NewVariableNames', 'vError');
-                runStruct.data = addvars(runStruct.data, dataVE.refVel, 'NewVariableNames', 'refVel');
-                runStruct.data = addvars(runStruct.data, dataVE.rCurvature, 'NewVariableNames', 'rCurvature');
-
-
-            end
-
-            %% Read in ProMoD layers if they exist
-            ProMoDmatFilePath = strrep(matFilePath, '.mat', '_ProMoD.mat');
-
-            if isfile(ProMoDmatFilePath)
-
-                % Load the CTE layer
-                load(ProMoDmatFilePath)
-
-                % Join CTE layer to the data for the run
-                runStruct.data = addvars(runStruct.data, dataProMoD.MSteer, 'NewVariableNames', 'MSteer');
-
-            end
+            %% Read in layers
+            runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'VE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
 
             %% Fetch the data for the selected lap
             lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
