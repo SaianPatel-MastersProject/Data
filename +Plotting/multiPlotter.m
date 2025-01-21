@@ -73,6 +73,7 @@ classdef multiPlotter
 
 
         end
+        
         %% Function to add a single lap of data
         function obj = addLap(obj, matFilePath, lapNumber)
 
@@ -130,6 +131,7 @@ classdef multiPlotter
             
         end
 
+        %% Function to update the legend cell
         function obj = updateLegendCell(obj)
 
             nLaps = size(obj.data, 2);
@@ -160,6 +162,8 @@ classdef multiPlotter
 
 
         end
+        
+        %% Function to plot fundamentals
         function plotFundamentals(obj)
             
             figure("Name", 'Fundamentals'); % Create a fundamentals figure
@@ -397,6 +401,7 @@ classdef multiPlotter
             grid minor;
 
         end
+        
         %% Function for plotting errors with steering
         function plotErrorsWithSteering(obj)
 
@@ -969,6 +974,110 @@ classdef multiPlotter
             xlabel('Lap')
             ylabel('Steering Angle (deg)')
             title('Steering Box Plot')
+
+        end
+    
+    
+        %% Function to show envelopes
+        function plotEnvelopeCTE(obj, runIdx, channel, bOverlayLaps)
+
+            nLaps = size(obj.runData(runIdx).lapNumbers,1);
+
+            % Get the largest start distance and smallest end distance for the set of laps
+            lapStart = -1;
+            lapEnd = 1e6;
+
+            for i = 1:nLaps
+
+                lap_i = obj.runData(runIdx).lapNumbers(i);
+
+                lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
+
+                lapStart_i = min(lapData.lapDist);
+
+                lapEnd_i = max(lapData.lapDist);
+
+                % Update as necessary
+                if lapStart_i > lapStart
+
+                    lapStart = lapStart_i;
+
+                end
+
+                if lapEnd_i < lapEnd
+
+                    lapEnd = lapEnd_i;
+
+                end
+
+            end
+
+            % Re-interpolate to a common sLap vector
+            nPoints = 2000;
+            sLap = linspace(lapStart, lapEnd, nPoints)';
+
+            % Create a new array of channel data for each lap
+            channelArray = zeros([nPoints, nLaps]);
+
+            for i = 1:nLaps
+
+                % Interpolate the lap data and store it
+                lap_i = obj.runData(runIdx).lapNumbers(i);
+
+                lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
+
+                % Find where lapDist stutters
+                dLapDist = [1; diff(lapData.lapDist)];
+                stutterIdx = dLapDist ~= 0;
+                lapData = lapData(stutterIdx, :);
+
+                % 
+                channelArray(:,i) = interp1(lapData.lapDist, lapData.(channel), sLap);
+
+            end
+
+            %  Get the row-wise stats metrics
+            % (mean, stdev, max, min)
+            meanValues = mean(channelArray, 2);
+            stdValues = std(channelArray, 1, 2);
+            maxValues = max(channelArray, [], 2);
+            minValues = min(channelArray, [], 2);
+
+            % Plot
+            % Plot the average lap with envelope
+            figure;
+            hold on;
+            
+            % Plot min-max envelope
+            patch([sLap; flip(sLap)], [meanValues + stdValues; flip(meanValues - stdValues)], 'b', 'FaceAlpha', 0.4)
+
+            % Plot mean ± standard deviation envelope
+            patch([sLap; flip(sLap)], [minValues; flip(maxValues)], 'b', 'FaceAlpha', 0.2)
+
+            % Plot mean values
+            plot(sLap, meanValues, 'r-', 'LineWidth', 2, 'DisplayName', 'Average');
+
+            % Get the number of specified laps
+            nLaps = size(obj.data, 2);
+
+            if and(bOverlayLaps, nLaps > 0)
+
+                % Plot each lap
+                for i = 1:nLaps
+
+                    plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.(channel),  'LineWidth', 2);
+
+                end
+
+            end
+
+            % Customize plot
+            title('Average Lap with Variability Envelope');
+            xlabel('Lap Distance (m)');
+            ylabel('Cross-Track Error (units)');
+            legend('Mean ± Std Dev', 'Min-Max Range', 'Average', 'Location', 'Best');
+            grid on;
+            hold off;
 
         end
     end
