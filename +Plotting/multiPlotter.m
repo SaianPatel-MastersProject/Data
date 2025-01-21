@@ -5,6 +5,7 @@ classdef multiPlotter
     properties
 
         data; % Struct array of lap-by-lap data
+        runData; % Struct array of runData
         plottingTools; % Info for plotting
         
 
@@ -15,10 +16,64 @@ classdef multiPlotter
 
             % Construct class
             obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '', 'metricsCTE', table, 'metricsHE', table);
+            obj.runData = struct('runID', '', 'lapNumbers', [], 'runData', table, 'track', '', 'driver', '');
             obj.plottingTools = struct();
 
         end
 
+        %% Function to add an entire run of data
+        function obj = addRun(obj, matFilePath, bFlying)
+
+            % Read in a run .mat file
+            load(matFilePath);
+
+            % Load Associated Layers
+            runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'VE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+
+            % Check how many laps are in the run
+            lapsInRun = unique(runStruct.data.lapNumber);
+            nLaps = length(lapsInRun);
+
+            % If there are more than 2 laps (i.e. at least one flying lap
+            % with an out and in lap) then only keep the flying laps
+            if and(nLaps > 2, bFlying)
+
+                runData = runStruct.data(runStruct.data.lapNumber < lapsInRun(end), :);
+                runData = runData(runData.lapNumber > 0, :);
+                lapsInRun = lapsInRun(2:end-1);
+
+            else
+
+                runData = runStruct.data;
+                warning('Using all laps in the run.')
+
+            end
+
+            % Populate the struct array
+            % Check current number of entries in the struct
+            nEntries = size(obj.runData, 2);
+
+            if isempty(obj.runData(1).lapNumbers)
+
+                i = 1;
+
+            else
+
+                i = nEntries + 1;
+
+            end
+
+            obj.runData(i).runID = runStruct.metadata.runID;
+            obj.runData(i).lapNumbers = lapsInRun;
+            obj.runData(i).runData = runData;
+            obj.runData(i).track = runStruct.metadata.track;
+            obj.runData(i).driver = runStruct.metadata.driver;
+
+
+        end
+        %% Function to add a single lap of data
         function obj = addLap(obj, matFilePath, lapNumber)
 
             % Read in a run .mat file
