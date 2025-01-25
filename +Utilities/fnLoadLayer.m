@@ -22,7 +22,8 @@ function runStruct = fnLoadLayer(runStruct, layer)
         catch
             
             % Return with warning
-            error('Could not find the specified layer.')
+            warning('Could not find the specified layer.')
+            return;
 
         end
 
@@ -60,7 +61,8 @@ function runStruct = fnLoadLayer(runStruct, layer)
         otherwise
 
             % Error - unrecognised layer type
-            error('Unrecognised layer type.')
+            warning('Unrecognised layer type.')
+            return;
 
     end
 
