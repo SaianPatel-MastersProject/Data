@@ -9,13 +9,13 @@ function drivingTrainingLine = fnCreateDrivingTrainingLine(matFilePath, lapNumbe
 
     % Get x, y, z, throttle and brake
     x = lapData.posX;
-    y = lapDtaa.posY;
+    y = lapData.posY;
     z = lapData.posZ;
     rThrottle = lapData.throttle;
     rBrake = lapData.brake;
 
     % Format for the driving training line
     % [X, Y, Z] to [Y, Z, -X]
-    drivingTrainingLine = [Y, Z, -X, rThrottle, rBrake];
+    drivingTrainingLine = [y, z, -x, rThrottle, rBrake];
 
 end
