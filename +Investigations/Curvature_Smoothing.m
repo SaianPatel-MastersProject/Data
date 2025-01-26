@@ -44,7 +44,7 @@ for i = 1:numel(nPoints)
 end
 xlabel('Lap Distance (m)')
 ylabel('Curvature \kappa')
-legend({'150', '750', '2000', '10000'})
+legend(flip({'150', '750', '2000', '10000'}))
 
 %% Interpolate every s (m)
 
