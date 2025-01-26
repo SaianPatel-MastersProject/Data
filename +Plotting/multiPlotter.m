@@ -29,7 +29,7 @@ classdef multiPlotter
 
             % Load Associated Layers
             runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
-            runStruct = Utilities.fnLoadLayer(runStruct, 'VE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
             runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
 
             % Check how many laps are in the run
@@ -91,7 +91,7 @@ classdef multiPlotter
 
             %% Read in layers
             runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
-            runStruct = Utilities.fnLoadLayer(runStruct, 'VE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
             runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
 
             %% Fetch the data for the selected lap
@@ -472,7 +472,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.lapDist, 1 ./ obj.data(i).lapData.rCurvature);
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.kappa);
 
             end
 
