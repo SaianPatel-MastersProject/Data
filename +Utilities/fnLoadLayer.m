@@ -39,6 +39,12 @@ function runStruct = fnLoadLayer(runStruct, layer)
             runStruct.data = addvars(runStruct.data, dataPE.closestWaypointY, 'NewVariableNames', 'closestWaypointY');
             runStruct.data = addvars(runStruct.data, dataPE.HeadingError, 'NewVariableNames', 'HeadingError');
 
+        case 'KAP'
+
+            % Join VE layer to the data for the run
+            runStruct.data = addvars(runStruct.data, dataKAP.kappa, 'NewVariableNames', 'kappa');
+            runStruct.data = addvars(runStruct.data, dataKAP.rCurvature, 'NewVariableNames', 'rCurvature');
+
         case 'CTE'
 
             % Join CTE layer to the data for the run
