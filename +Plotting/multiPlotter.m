@@ -31,7 +31,7 @@ classdef multiPlotter
             runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
             runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
             runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
-
+            
             % Check how many laps are in the run
             lapsInRun = unique(runStruct.data.lapNumber);
             nLaps = length(lapsInRun);
