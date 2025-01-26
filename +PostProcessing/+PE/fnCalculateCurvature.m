@@ -12,7 +12,7 @@ function [kappa, rCurvature] = fnCalculateCurvature(AIW_Data)
     curvature_signed = (dx .* ddy - dy .* ddx) ./ (dx.^2 + dy.^2).^(3/2);
 
     % Set kappa
-    kappa = movmean(curvature_signed, 25);
+    kappa = movmean(curvature_signed, 5);
 
     % Set rCurvature
     rCurvature = 1./ kappa;
