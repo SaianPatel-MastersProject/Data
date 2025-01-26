@@ -6,7 +6,7 @@ function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
     switch runStruct.metadata.track
         case 'Arrow Speedway'
 
-            AIW_Table = readtable('+PostProcessing\+CTE\Arrow.csv');
+            AIW_Table = readtable('+PostProcessing\+CTE\Arrow_IP.csv');
 
         case '2kFlat'
 
