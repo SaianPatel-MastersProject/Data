@@ -22,7 +22,7 @@ classdef multiPlotter
         end
 
         %% Function to add an entire run of data
-        function obj = addRun(obj, matFilePath, bFlying)
+        function obj = addRun(obj, matFilePath, bFlying, lapsFilter)
 
             % Read in a run .mat file
             load(matFilePath);
@@ -36,9 +36,31 @@ classdef multiPlotter
             lapsInRun = unique(runStruct.data.lapNumber);
             nLaps = length(lapsInRun);
 
+            % Apply the laps filter
+            if ~isempty(lapsFilter)
+
+                for i = 1:numel(lapsFilter)
+
+                    runData_i = runStruct.data(runStruct.data.lapNumber == lapsFilter(i), :);
+
+                    if i == 1
+
+                        runData = runData_i;
+
+                    else
+
+                        runData = [runData; runData_i];
+
+                    end
+
+                end
+
+                % Get the laps in the run
+                lapsInRun = unique(runData.lapNumber);
+  
             % If there are more than 2 laps (i.e. at least one flying lap
             % with an out and in lap) then only keep the flying laps
-            if and(nLaps > 2, bFlying)
+            elseif and(nLaps > 2, bFlying)
 
                 runData = runStruct.data(runStruct.data.lapNumber < lapsInRun(end), :);
                 runData = runData(runData.lapNumber > 0, :);
