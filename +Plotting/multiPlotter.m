@@ -1141,7 +1141,7 @@ classdef multiPlotter
 
         end
 
-        %% Function to plot humanness metrics for a run
+        %% Function to plot violins for a run
         function plotRunViolins(obj)
 
             figure("Name", 'Run Violins');
@@ -1192,5 +1192,57 @@ classdef multiPlotter
             ylabel('dCTE')
         end
 
+        %% Function to plot lap metrics, grouped by run
+        function plotGroupedMetrics(obj)
+
+            figure("Name", 'Grouped Metrics');
+
+            nRuns = size(obj.runData, 2);
+
+            % TCTE
+            subplot(2,2,1);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).metricsCTE.TCTE);
+
+            end
+            ylabel('TCTE')
+            legend(obj.plottingTools.legendCell)
+
+            % TACTE
+            subplot(2,2,2);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).metricsCTE.TACTE);
+
+            end
+            ylabel('TACTE')
+
+            nRuns = size(obj.runData, 2);
+
+            % rRW
+            subplot(2,2,3);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).metricsCTE.rRW);
+
+            end
+            ylabel('rRW')
+
+            % Average CTE
+            subplot(2,2,4);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).metricsCTE.CTE_avg);
+
+            end
+            ylabel('Average CTE')
+
+
+        end
     end
 end
