@@ -1074,11 +1074,43 @@ classdef multiPlotter
             % Customize plot
             title('Average Lap with Variability Envelope');
             xlabel('Lap Distance (m)');
-            ylabel('Cross-Track Error (units)');
-            legend('Mean ± Std Dev', 'Min-Max Range', 'Average', 'Location', 'Best');
+            ylabel(channel);
+            legend('Mean ± Std Dev', 'Average', 'Human', 'FFNN', 'Location', 'Best');
             grid on;
             hold off;
 
         end
+
+        %% Function to plot pspectrum
+        function plotPSpectrum(obj, channel, mode)
+
+            figure;
+            hold on
+
+            switch mode
+                case 'Lap'
+                    nLaps = size(obj.data, 2);
+                    for i = 1:nLaps
+        
+                        pspectrum(obj.data(i).lapData.(channel), 100);
+        
+                    end
+                case 'Run'
+
+                    nRuns = size(obj.data, 2);
+                    for i = 1:nRuns
+        
+                        pspectrum(obj.runData(i).runData.(channel), 100);
+        
+                    end
+            end
+
+            title('PSpectrum')
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+        end
+
     end
 end
