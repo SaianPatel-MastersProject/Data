@@ -1244,5 +1244,100 @@ classdef multiPlotter
 
 
         end
+
+        %% Function to plot transfer function
+        function plotTF(obj, inputChannel, outputChannel, mode)
+
+            figure("Name", 'Transfer Function');
+            hold on
+            title('Transfer Function')
+
+            switch mode
+                case 'Lap'
+                    nLaps = size(obj.data, 2);
+                    for i = 1:nLaps
+        
+                        x = obj.data(i).lapData.(inputChannel);
+                        y = obj.data(i).lapData.(outputChannel);
+
+                        nSamples = length(x);
+                        fftLength = ceil(nSamples/16);
+                        windowVector = hanning(fftLength)*2;
+                        nOverlap = ceil(7*fftLength/8);
+                        [txy,tf] = tfestimate(x,y,windowVector,nOverlap,fftLength, 100);
+                        % txy = txy .* ((1j .* 2 .* pi .* tf) .^ 1); % If wanting to look at derivatives
+                        [coh, freq] = mscohere(x,y,windowVector,nOverlap,fftLength, 100);
+
+                        subplot(3,1,1)
+                        hold on
+                        plot(tf, abs(txy))
+                        
+                        subplot(3,1,2)
+                        hold on
+                        plot(tf, angle(txy))
+                        
+                        subplot(3,1,3)
+                        hold on
+                        plot(freq, coh)
+
+
+
+                    end
+
+                case 'Run'
+
+                    nRuns = size(obj.runData, 2);
+                    for i = 1:nRuns
+        
+                        x = obj.runData(i).runData.(inputChannel);
+                        y = obj.runData(i).runData.(outputChannel);
+
+                        nSamples = length(x);
+                        fftLength = ceil(nSamples/16);
+                        windowVector = hanning(fftLength)*2;
+                        nOverlap = ceil(7*fftLength/8);
+                        [txy,tf] = tfestimate(x,y,windowVector,nOverlap,fftLength, 100);
+                        % txy = txy .* ((1j .* 2 .* pi .* tf) .^ 1); % If wanting to look at derivatives
+                        [coh, freq] = mscohere(x,y,windowVector,nOverlap,fftLength, 100);
+
+                        subplot(3,1,1)
+                        hold on
+                        plot(tf, abs(txy))
+
+                        subplot(3,1,2)
+                        hold on
+                        plot(tf, angle(txy))
+
+
+
+                        subplot(3,1,3)
+                        hold on
+                        plot(freq, coh)
+
+                    end
+
+            end
+
+            subplot(3,1,1)
+            xlabel('Frequency (Hz)')
+            ylabel('Magnitude')
+            grid;
+            grid minor;
+
+            subplot(3,1,2)
+            xlabel('Frequency (Hz)')
+            ylabel('Phase Angle')
+            grid;
+            grid minor;
+
+            subplot(3,1,3)
+            hold on
+            xlabel('Frequency (Hz)')
+            ylabel('Coherence')
+            grid;
+            grid minor;
+
+
+        end
     end
 end
