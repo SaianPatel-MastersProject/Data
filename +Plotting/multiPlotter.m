@@ -1008,7 +1008,7 @@ classdef multiPlotter
     
     
         %% Function to show envelopes
-        function plotEnvelopeCTE(obj, runIdx, channel, bOverlayLaps)
+        function plotEnvelope(obj, runIdx, channel, bOverlayLaps)
 
             nLaps = size(obj.runData(runIdx).lapNumbers,1);
 
