@@ -16,7 +16,7 @@ classdef multiPlotter
 
             % Construct class
             obj.data = struct('runID', '', 'lapNumber', [], 'lapData', table, 'track', '', 'driver', '', 'metricsCTE', table, 'metricsHE', table);
-            obj.runData = struct('runID', '', 'lapNumbers', [], 'runData', table, 'track', '', 'driver', '');
+            obj.runData = struct('runID', '', 'lapNumbers', [], 'runData', table, 'track', '', 'driver', '', 'metricsCTE', table);
             obj.plottingTools = struct();
 
         end
@@ -92,6 +92,13 @@ classdef multiPlotter
             obj.runData(i).runData = runData;
             obj.runData(i).track = runStruct.metadata.track;
             obj.runData(i).driver = runStruct.metadata.driver;
+
+            % Add metrics CTE
+            for j = 1:numel(lapsInRun)
+
+                obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
+
+            end
 
 
         end
@@ -1119,7 +1126,7 @@ classdef multiPlotter
                     end
                 case 'Run'
 
-                    nRuns = size(obj.data, 2);
+                    nRuns = size(obj.runData, 2);
                     for i = 1:nRuns
         
                         pspectrum(obj.runData(i).runData.(channel), 100);
@@ -1132,6 +1139,57 @@ classdef multiPlotter
             grid;
             grid minor;
 
+        end
+
+        %% Function to plot humanness metrics for a run
+        function plotRunViolins(obj)
+
+            figure("Name", 'Run Violins');
+
+            nRuns = size(obj.runData, 2);
+
+            % Steering Angle 
+            subplot(2,2,1);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).runData.steerAngle * 225);
+
+            end
+            ylabel('Steering Angle')
+            legend(obj.plottingTools.legendCell)
+
+             % dSteering Angle 
+            subplot(2,2,2);
+            hold on
+            for i = 1:nRuns
+
+                violinplot([0; diff(obj.runData(i).runData.steerAngle * 225) * 100]);
+
+            end
+            ylabel('dSteerAngle')
+
+            nRuns = size(obj.runData, 2);
+
+            % CTE
+            subplot(2,2,3);
+            hold on
+            for i = 1:nRuns
+
+                violinplot(obj.runData(i).runData.CTE);
+
+            end
+            ylabel('CTE')
+
+            % dCTE
+            subplot(2,2,4);
+            hold on
+            for i = 1:nRuns
+
+                violinplot([0; diff(obj.runData(i).runData.CTE)]);
+
+            end
+            ylabel('dCTE')
         end
 
     end
