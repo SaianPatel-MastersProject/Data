@@ -1,5 +1,20 @@
 %% Function to Create a Circle Track
-function circPoints = fnCreateCircle(x0, y0, x1, y1, r, direction, nPoints)
+function circTrainingLine = fnCreateCircle(matFilePath, lapNumber, r, direction, nPoints)
+
+    % Load in the mat
+    load(matFilePath);
+
+    % Filter the data to the specified lap
+    lapData = runStruct.data(runStruct.data.lapNumber == lapNumber, :);
+    
+    % Get x, y, z, throttle and brake
+    x0 = lapData.posX(1);
+    y0 = lapData.posY(1);
+    x1 = lapData.posX(2);
+    y1 = lapData.posY(2);
+    z = lapData.posZ(1:nPoints); % This is OK for 2kF
+    rThrottle = ones([nPoints,1]);
+    rBrake = zeros([nPoints,1]);
 
     % Compute the direction vectors
     dx = x1 - x0;
@@ -60,6 +75,9 @@ function circPoints = fnCreateCircle(x0, y0, x1, y1, r, direction, nPoints)
     theta = (linspace(0, 2*pi, nPoints))';
     x = cx + r * cos(theta);
     y = cy + r * sin(theta);
-    circPoints = [x, y];
+    
+    % Format for the driving training line
+    % [X, Y, Z] to [Y, Z, -X]
+    circTrainingLine = [y, z, -x, rThrottle, rBrake];
 
 end
