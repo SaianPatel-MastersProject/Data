@@ -12,13 +12,13 @@ function trackPointsPadded = fnPadEndOfLap(trackPoints, threshold)
     if dEnd > threshold
 
         d = [0; dEnd];
-        dQ = (0 : threshold : dEnd - threshold)';
+        dQ = (0 : 1 : dEnd - threshold)';
         xI = interp1(d, [x(end); x(1)], dQ);
         yI = interp1(d, [y(end); y(1)], dQ);
 
         % Pad
-        x = [x; xI];
-        y = [y; yI];
+        x = [x; xI; x(1)];
+        y = [y; yI; y(1)];
 
     end
 
