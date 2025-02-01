@@ -8,11 +8,14 @@ x1 = -244.5860;
 y1 = -0.9142;
 
 % Set the path to the image
-image_path = "C:\Users\Saian\OneDrive - Imperial College London\DE4\Masters\rFpro\AIW\2kF\Iteration 3 - Interlagos\Interlagos.png";
+image_path = "C:\Users\Saian\OneDrive - Imperial College London\DE4\Masters\rFpro\AIW\2kF\Iteration 5 - Qatar - True Scale\Qatar.png";
 
 %% 1. Use clicks to set control points
 
 trackPointsOriginal = TrackMaking.fnCreateTrackFromClicks(image_path, x0, y0, x1, y1);
+
+% Save track points original
+save('trackPointsOriginal.mat')
 
 %% 2. Smooth the SF Transition
 
@@ -48,18 +51,22 @@ scatter(x1, y1, 'filled', 'MarkerFaceColor', 'g')
 plot(trackPoints(:,1), trackPoints(:,2), 'Color', 'k');
 axis equal
 
-%% 6. Create Driving Training Line Table
+%% 6. Pad the end of the lap
+
+trackPoints = TrackMaking.fnPadEndOfLap(trackPoints, 1);
+
+%% 7. Create Driving Training Line Table
 
 drivingTrainingLine = Utilities.fnCreateDrivingTrainingLinePoints(trackPoints);
 
 % Convert to Table
 drivingTrainingLine = array2table(drivingTrainingLine);
 
-% Create csv
+% Create csvz
 writetable(drivingTrainingLine, 'DrivingLineExport.csv')
 
 
-%% 7. Plot the Curvature
+%% 8. Plot the Curvature
 
 [kappa, rCurvature] = PostProcessing.PE.fnCalculateCurvature(trackPoints);
 
