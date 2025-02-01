@@ -74,6 +74,9 @@ classdef rFproCSVtoMAT
             % Overwrite with stutter fix
             obj.data = newData;
             
+            % Overwrite lap numbers - only if there is a mismatch
+            obj = obj.correctLaps();
+
             % Store the filepath
             obj.metadata.filePath = csvFilePath;
 
@@ -301,6 +304,90 @@ classdef rFproCSVtoMAT
 
             % Save the .mat
             save(matFilePath, 'runStruct');
+
+
+        end
+
+        %% Function to correct lap numbers
+        function obj = correctLaps(obj)
+
+            % Get the number of laps in the run
+            lapsInRun = unique(obj.data.lapNumber);
+            nLaps = numel(lapsInRun);
+
+            % Get x and y
+            x = obj.data.posX;
+            y = obj.data.posY;
+
+            % Specify a manual timing plane
+            xL = -260;
+            yL = -1.715;
+            xR = -230;
+            yR = -1.715;
+
+            intersections = []; % Store intersection points
+
+            % Iterate through trajectory segments
+            for i = 1:length(x)-1
+                % Line segment endpoints
+                x1 = x(i); y1 = y(i);
+                x2 = x(i+1); y2 = y(i+1);
+
+                % Solve for intersection using determinant method
+                A = [x2 - x1, xL - xR; y2 - y1, yL - yR];
+                B = [xL - x1; yL - y1];
+
+                if det(A) == 0  % Lines are parallel
+                    continue;
+                end
+
+                % Solve for t and u
+                T = A \ B;  % Equivalent to inv(A) * B but faster
+
+                t = T(1);
+                u = T(2);
+
+                % Check if intersection is within both segments (0 ≤ t ≤ 1 and 0 ≤ u ≤ 1)
+                if (t >= 0 && t <= 1) && (u >= 0 && u <= 1)
+                    % Compute intersection point
+                    xi = x1 + t * (x2 - x1);
+                    yi = y1 + t * (y2 - y1);
+                    intersections = [intersections; xi, yi, i]; %#ok<AGROW>
+                end
+            end
+
+            % Get the number of intersections
+            nIntersections = size(intersections, 1);
+
+            % If the number of intersections is more than the number of
+            % laps recorded, then correct the laps
+            if nIntersections+1 > nLaps
+
+                % Throw warning
+                warning('Using interesctions to correct lap numbers.')
+
+                lap = 0;
+    
+                for i = 1:nIntersections
+    
+                    if i == 1
+                    
+                        obj.data.lapNumber(1:intersections(i,3)) = lap;
+    
+                    else
+    
+                        obj.data.lapNumber(intersections(i-1,3)+1:intersections(i,3)) = lap;
+    
+                    end
+    
+                    lap = lap + 1;
+    
+                end
+    
+                % Set the final lap
+                obj.data.lapNumber(intersections(end,3)+1:end) = lap;
+
+            end
 
 
         end
