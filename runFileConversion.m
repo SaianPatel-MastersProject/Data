@@ -1,5 +1,5 @@
 %% run rFpro csv to mat
-function obj = runFileConversion(csvFilePath, runDescription, runNumber, driverName, vehicleModel)
+function obj = runFileConversion(csvFilePath, runDescription, runNumber, driverName, vehicleModel, trackModel)
 
     % Initiate class
     try
@@ -17,7 +17,7 @@ function obj = runFileConversion(csvFilePath, runDescription, runNumber, driverN
     % Get run information
     try
 
-        obj = obj.getRunInfo();
+        obj = obj.getRunInfo(trackModel);
     
     catch ME
 

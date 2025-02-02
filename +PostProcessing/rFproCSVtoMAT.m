@@ -86,13 +86,21 @@ classdef rFproCSVtoMAT
         end
 
         %% Function to get run metadata and important info
-        function obj = getRunInfo(obj)
+        function obj = getRunInfo(obj, track)
 
             % Store the filename as the ID
             [~, obj.metadata.runName, ~] = fileparts(obj.metadata.filePath);
 
             % Store track name
-            obj.metadata.track = extractBefore(obj.metadata.runName, '-');
+            if isempty(track)
+
+                obj.metadata.track = extractBefore(obj.metadata.runName, '-');
+
+            else
+
+                obj.metadata.track = track;
+
+            end
 
             % Store run date
             dateString = char(extractBetween(obj.metadata.runName, '-', '_'));
