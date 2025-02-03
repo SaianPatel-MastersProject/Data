@@ -39,6 +39,9 @@ classdef rFproCSVtoMAT
 
             obj.data = rawData(:, channelsToKeep');
 
+            % Overwrite lap numbers - only if there is a mismatch
+            obj = obj.correctLaps();
+
             % Get the number of laps in the run
             lapsInRun = unique(obj.data.lapNumber);
             nLaps = numel(lapsInRun);
@@ -73,9 +76,6 @@ classdef rFproCSVtoMAT
 
             % Overwrite with stutter fix
             obj.data = newData;
-            
-            % Overwrite lap numbers - only if there is a mismatch
-            obj = obj.correctLaps();
 
             % Store the filepath
             obj.metadata.filePath = csvFilePath;
@@ -387,6 +387,15 @@ classdef rFproCSVtoMAT
                         obj.data.lapNumber(intersections(i-1,3)+1:intersections(i,3)) = lap;
     
                     end
+
+                    % Get the data for the lap
+                    lapData = obj.data.lapDist(obj.data.lapNumber == lap);
+
+                    % Get the start distance value
+                    lapDistStart = lapData(1);
+
+                    % Reset the lap distance
+                    obj.data.lapDist(obj.data.lapNumber == lap) = obj.data.lapDist(obj.data.lapNumber == lap) - lapDistStart;
     
                     lap = lap + 1;
     
