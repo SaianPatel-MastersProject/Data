@@ -1,7 +1,7 @@
 function MSteer = calculateSteeringAggressiveness(runStruct)
 
     % Set maximum and minimum steering angles (deg) to define normal cornering
-    deltaMax = 225;
+    deltaMax = 10000;
     deltaMin = 0;
 
     % Specify steering scalar (Steering at 1 is 225 deg)
