@@ -1359,6 +1359,9 @@ classdef multiPlotter
             grid;
             grid minor;
 
+            % Link Axes
+            linkaxes(findall(gcf,'Type','axes'), 'x');
+
 
         end
         
