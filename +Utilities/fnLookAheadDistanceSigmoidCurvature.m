@@ -3,10 +3,10 @@ function dLook = fnLookAheadDistanceSigmoidCurvature(dMin, dMax, a, kappa0, kapp
     
     % Take the absolute of kappa and get maximum
     kappa = abs(kappa);
-    kappaMax = max(kappa);
-
-    % Re-do kappa array
-    kappa = linspace(0, kappaMax, 1000);
+    % kappaMax = max(kappa);
+    % 
+    % % Re-do kappa array
+    % kappa = linspace(0, kappaMax, 1000);
 
     % Compute look-ahead distance using the sigmoid function
     dLook = dMin + (dMax - dMin) ./ (1 + exp(a * (kappa - kappa0)));
