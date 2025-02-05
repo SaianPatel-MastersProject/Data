@@ -93,10 +93,11 @@ classdef multiPlotter
             obj.runData(i).track = runStruct.metadata.track;
             obj.runData(i).driver = runStruct.metadata.driver;
 
-            % Add metrics CTE
+            % Add metrics CTE and steering
             for j = 1:numel(lapsInRun)
 
                 obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
+                obj.runData(i).metricsSteer(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
 
             end
 
@@ -147,6 +148,8 @@ classdef multiPlotter
 
             %% Get the Heading Error metrics sumamry
             obj.data(i).metricsHE = PostProcessing.PE.calculateHeadingErrorMetrics(runStruct, lapNumber);
+
+            obj.data(i).metricsSteer = PostProcessing.Metrics.calculateSteeringMetrics(runStruct, lapNumber);
 
             %% Populate the struct
             obj.data(i).runID = runID;
