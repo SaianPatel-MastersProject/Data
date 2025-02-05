@@ -1079,7 +1079,7 @@ classdef multiPlotter
             hold on;
             
             % Plot min-max envelope
-            % patch([sLap; flip(sLap)], [meanValues + stdValues; flip(meanValues - stdValues)], 'b', 'FaceAlpha', 0.4)
+            patch([sLap; flip(sLap)], [meanValues + stdValues; flip(meanValues - stdValues)], 'b', 'FaceAlpha', 0.4)
 
             % Plot mean ± standard deviation envelope
             patch([sLap; flip(sLap)], [minValues; flip(maxValues)], 'b', 'FaceAlpha', 0.2)
