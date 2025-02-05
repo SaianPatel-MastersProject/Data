@@ -1126,7 +1126,7 @@ classdef multiPlotter
             title('Average Lap with Variability Envelope');
             xlabel('Lap Distance (m)');
             ylabel(channel);
-            legend('Mean ± Std Dev', 'Average', 'Human', 'FFNN', 'Location', 'Best');
+            legend('Mean ± Std Dev', 'Min-Max', 'Average', 'Human', 'FFNN', 'Location', 'Best');
             grid on;
             hold off;
 
