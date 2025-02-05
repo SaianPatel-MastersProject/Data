@@ -363,8 +363,9 @@ classdef multiPlotter
 
                     otherwise
 
-                        % Track not recognised
-                        return;
+                        AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
+                        % % Track not recognised
+                        % return;
 
                 end
 
