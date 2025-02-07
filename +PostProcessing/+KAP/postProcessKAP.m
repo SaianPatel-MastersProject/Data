@@ -14,8 +14,11 @@ function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
 
         otherwise
 
+
+            AIW_Table = Utilities.fnLoadAIW('SUZ');
+            % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
             % Track not recognised
-            return;
+            % return;
 
     end
 
@@ -26,13 +29,13 @@ function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
 
     if bInterpolated
 
-        dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
-        rollingDistance = [0; cumsum(dBetweenPoints)];
-        dNew = (linspace(0, rollingDistance(end), nPoints))';
-        xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
-        yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
-        kappaInterp = interp1(rollingDistance, kappa, dNew, interpMethod);
-        rCurvatureInterp = interp1(rollingDistance, rCurvature, dNew, interpMethod);
+        spacing = 0.1;
+        method = 'spline';
+
+        xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, spacing, method);
+        yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, spacing, method);
+        kappaInterp = Utilities.fnInterpolateByDist(AIW_Data, kappa, spacing, method);
+        rCurvatureInterp = Utilities.fnInterpolateByDist(AIW_Data, rCurvature, spacing, method);
         AIW_Data = [xInterp, yInterp, kappaInterp, rCurvatureInterp];
 
     end

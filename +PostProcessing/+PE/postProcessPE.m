@@ -15,7 +15,9 @@ function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
         otherwise
 
             % Track not recognised
-            return;
+            % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
+            AIW_Table = Utilities.fnLoadAIW('SUZ');
+            % return;
 
     end
 
@@ -23,12 +25,20 @@ function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
 
     if bInterpolated
 
-        dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
-        rollingDistance = [0; cumsum(dBetweenPoints)];
-        dNew = (linspace(0, rollingDistance(end), nPoints))';
-        xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
-        yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
+        % dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
+        % rollingDistance = [0; cumsum(dBetweenPoints)];
+        % dNew = (linspace(0, rollingDistance(end), nPoints))';
+        % xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
+        % yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
+        % AIW_Data = [xInterp, yInterp];
+
+        spacing = 0.1;
+        method = 'spline';
+
+        xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, spacing, method);
+        yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, spacing, method);
         AIW_Data = [xInterp, yInterp];
+
 
     end
 
