@@ -16,7 +16,7 @@ function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
 
             % Track not recognised
             % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
-            AIW_Table = Utilities.fnLoadAIW('SUZ');
+            AIW_Table = Utilities.fnLoadAIW(runStruct.metadata.track);
             % return;
 
     end

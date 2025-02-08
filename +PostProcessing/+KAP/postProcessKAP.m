@@ -15,7 +15,7 @@ function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
         otherwise
 
 
-            AIW_Table = Utilities.fnLoadAIW('SUZ');
+            AIW_Table = Utilities.fnLoadAIW(runStruct.metadata.track);
             % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
             % Track not recognised
             % return;
