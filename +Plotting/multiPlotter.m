@@ -1446,5 +1446,109 @@ classdef multiPlotter
             ylabel('y (m)');
 
         end
+
+        %% Function to plot line distribution for a run - Corner By Corner
+        function plotLineDistributionPerCorner(obj, runIdx, plotAIW, lapsIdx)
+
+            figure("Name", 'Line Distribution')
+            hold on
+
+            % Read in the nCorner sheet
+            nCorner_Table = readtable(fullfile('+Plotting\+nCorner', ['SUZ', '.xlsx']));
+
+            % Get number of corners
+            nCorners = size(nCorner_Table, 1);
+
+            % Get m and n for subplotting
+            m = nCorner_Table.m(1);
+            n = nCorner_Table.n(1);
+
+            % Get the number of laps in the run
+            nLapsInRun = size(obj.runData(runIdx).lapNumbers,1);
+
+            for j = 1:nCorners
+
+                subplot(m, n, j)
+                hold on
+
+                for i = 1:nLapsInRun
+
+                    lap_i = obj.runData(runIdx).lapNumbers(i);
+
+                    lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
+
+                    plot(lapData.posX, lapData.posY, 'Color', 'k', 'LineWidth', 6)
+
+                end
+
+                % Plot the reference AIW if specified
+                if plotAIW
+
+                    switch obj.runData(runIdx).track
+                        case 'Arrow Speedway'
+
+                            AIW_Table = readtable('+PostProcessing\+CTE\Arrow.csv');
+
+                        case '2kFlat'
+
+                            AIW_Table = readtable('+PostProcessing\+CTE\2kFlat.csv');
+
+                        otherwise
+
+                            AIW_Table = Utilities.fnLoadAIW(obj.runData(runIdx).track);
+                            % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
+                            % % Track not recognised
+                            % return;
+
+                    end
+
+                    nPoints  = 10000;
+                    interpMethod = 'spline';
+
+                    AIW_Data = [AIW_Table.x, AIW_Table.y];
+                    dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
+                    rollingDistance = [0; cumsum(dBetweenPoints)];
+                    dNew = (linspace(0, rollingDistance(end), nPoints))';
+                    xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
+                    yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
+                    AIW_Data = [xInterp, yInterp];
+
+                    plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#F2F2F2', 'LineWidth', 2);
+
+                end
+
+                % Overlay laps if specified
+                if ~isempty(lapsIdx)
+
+                    for i = 1:numel(lapsIdx)
+
+                        idx = lapsIdx(i);
+
+                        try
+
+                            plot(obj.data(idx).lapData.posX, obj.data(idx).lapData.posY, 'LineWidth', 3, 'Color', obj.plottingTools.lapsColours{idx});
+
+                        catch
+
+                            plot(obj.data(idx).lapData.posX, obj.data(idx).lapData.posY, 'LineWidth', 3);
+
+                        end
+
+                    end
+
+                end
+
+                axis equal
+                title('Racing Line Distributions');
+                xlabel('x (m)');
+                ylabel('y (m)');
+                xlim([nCorner_Table.xMin(j), nCorner_Table.xMax(j)])
+                ylim([nCorner_Table.yMin(j), nCorner_Table.yMax(j)])
+
+
+
+            end
+            
+        end
     end
 end
