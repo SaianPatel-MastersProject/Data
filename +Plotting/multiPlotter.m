@@ -97,7 +97,7 @@ classdef multiPlotter
             for j = 1:numel(lapsInRun)
 
                 obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
-                obj.runData(i).metricsSteer(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
+                obj.runData(i).metricsSteer(j,:) = PostProcessing.Metrics.calculateSteeringMetrics(runStruct, lapsInRun(j));
 
             end
 
@@ -1386,7 +1386,7 @@ classdef multiPlotter
             % Plot the reference AIW if specified
             if plotAIW
 
-                switch obj.data(1).track
+                switch obj.runData(runIdx).track
                     case 'Arrow Speedway'
 
                         AIW_Table = readtable('+PostProcessing\+CTE\Arrow.csv');
@@ -1397,7 +1397,8 @@ classdef multiPlotter
 
                     otherwise
 
-                        AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
+                        AIW_Table = Utilities.fnLoadAIW(obj.runData(runIdx).track);
+                        % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
                         % % Track not recognised
                         % return;
 
