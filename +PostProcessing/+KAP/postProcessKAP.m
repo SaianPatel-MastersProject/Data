@@ -3,22 +3,14 @@ function postProcessKAP(matFilePath, interpType, interpParam, interpMethod)
     % Read in a run .mat file
     load(matFilePath);
 
-    switch runStruct.metadata.track
-        case 'Arrow Speedway'
+    try
 
-            AIW_Table = readtable('+PostProcessing\+CTE\Arrow_IP.csv');
+        % Directly load AIW using look-up
+        AIW_Table = Utilities.fnLoadAIW(runStruct.metadata.track);
 
-        case '2kFlat'
+    catch
 
-            AIW_Table = readtable('+PostProcessing\+CTE\2kFlat.csv');
-
-        otherwise
-
-
-            AIW_Table = Utilities.fnLoadAIW(runStruct.metadata.track);
-            % AIW_Table = readtable('+PostProcessing\+CTE\2kF_SUZE9.csv');
-            % Track not recognised
-            % return;
+        error('Could not find a corresponding AIW.')
 
     end
 
