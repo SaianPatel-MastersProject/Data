@@ -1,4 +1,4 @@
-function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
+function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
 
     % Read in a run .mat file
     load(matFilePath);
@@ -23,22 +23,19 @@ function postProcessPE(matFilePath, bInterpolated, nPoints, interpMethod)
 
     AIW_Data = [AIW_Table.x, AIW_Table.y];
 
-    if bInterpolated
+    switch interpType
 
-        % dBetweenPoints = (sqrt(diff(AIW_Data(:,1)).^2 + diff(AIW_Data(:,2)).^2));
-        % rollingDistance = [0; cumsum(dBetweenPoints)];
-        % dNew = (linspace(0, rollingDistance(end), nPoints))';
-        % xInterp = interp1(rollingDistance, AIW_Data(:,1), dNew, interpMethod);
-        % yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
-        % AIW_Data = [xInterp, yInterp];
+        case 'Distance'
 
-        spacing = 0.1;
-        method = 'spline';
+            xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, interpParam, interpMethod);
+            yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, interpParam, interpMethod);
+            AIW_Data = [xInterp, yInterp];
 
-        xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, spacing, method);
-        yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, spacing, method);
-        AIW_Data = [xInterp, yInterp];
+        case 'Points'
 
+            xInterp = Utilities.fnInterpolateByN(AIW_Data, AIW_Table.x, interpParam, interpMethod);
+            yInterp = Utilities.fnInterpolateByN(AIW_Data, AIW_Table.y, interpParam, interpMethod);
+            AIW_Data = [xInterp, yInterp];
 
     end
 

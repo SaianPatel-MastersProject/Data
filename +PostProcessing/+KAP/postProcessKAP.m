@@ -1,4 +1,4 @@
-function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
+function postProcessKAP(matFilePath, interpType, interpParam, interpMethod)
 
     % Read in a run .mat file
     load(matFilePath);
@@ -27,16 +27,22 @@ function postProcessKAP(matFilePath, bInterpolated, nPoints, interpMethod)
     % Calculate Curvature
     [kappa, rCurvature] = PostProcessing.PE.fnCalculateCurvature(AIW_Data);
 
-    if bInterpolated
+    switch interpType
+        case 'Distance'
 
-        spacing = 0.1;
-        method = 'spline';
+            xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, interpParam, interpMethod);
+            yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, interpParam, interpMethod);
+            kappaInterp = Utilities.fnInterpolateByDist(AIW_Data, kappa, interpParam, interpMethod);
+            rCurvatureInterp = Utilities.fnInterpolateByDist(AIW_Data, rCurvature, interpParam, interpMethod);
+            AIW_Data = [xInterp, yInterp, kappaInterp, rCurvatureInterp];
 
-        xInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.x, spacing, method);
-        yInterp = Utilities.fnInterpolateByDist(AIW_Data, AIW_Table.y, spacing, method);
-        kappaInterp = Utilities.fnInterpolateByDist(AIW_Data, kappa, spacing, method);
-        rCurvatureInterp = Utilities.fnInterpolateByDist(AIW_Data, rCurvature, spacing, method);
-        AIW_Data = [xInterp, yInterp, kappaInterp, rCurvatureInterp];
+        case 'Points'
+
+            xInterp = Utilities.fnInterpolateByN(AIW_Data, AIW_Table.x, interpParam, interpMethod);
+            yInterp = Utilities.fnInterpolateByN(AIW_Data, AIW_Table.y, interpParam, interpMethod);
+            kappaInterp = Utilities.fnInterpolateByN(AIW_Data, kappa, interpParam, interpMethod);
+            rCurvatureInterp = Utilities.fnInterpolateByN(AIW_Data, rCurvature, interpParam, interpMethod);
+            AIW_Data = [xInterp, yInterp, kappaInterp, rCurvatureInterp];
 
     end
 
