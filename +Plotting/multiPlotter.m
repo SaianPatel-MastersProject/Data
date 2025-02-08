@@ -1454,7 +1454,7 @@ classdef multiPlotter
             hold on
 
             % Read in the nCorner sheet
-            nCorner_Table = readtable(fullfile('+Plotting\+nCorner', ['SUZ', '.xlsx']));
+            nCorner_Table = readtable(fullfile('+Plotting\+nCorner', [obj.runData(runIdx).track, '.xlsx']));
 
             % Get number of corners
             nCorners = size(nCorner_Table, 1);
@@ -1538,12 +1538,13 @@ classdef multiPlotter
 
                 end
 
-                axis equal
-                title('Racing Line Distributions');
+                % axis equal
+                title(sprintf('Turn %i', j));
                 xlabel('x (m)');
                 ylabel('y (m)');
                 xlim([nCorner_Table.xMin(j), nCorner_Table.xMax(j)])
                 ylim([nCorner_Table.yMin(j), nCorner_Table.yMax(j)])
+                
 
 
 
