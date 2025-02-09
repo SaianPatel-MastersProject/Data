@@ -32,7 +32,8 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
         tSegment = [0; diff(corneringLapData.lapTime)];
 
         % Find the corner segment changes
-        iSegment = find(tSegment > 0.02);
+        % iSegment = find(tSegment > 0.02);
+        iSegment = [];
 
         % Find the number of corners
         nCorners = size(iSegment,1) + 1;
