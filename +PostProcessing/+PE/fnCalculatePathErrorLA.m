@@ -11,11 +11,8 @@ function [CTE, closestWaypoint, headingError]  = fnCalculatePathErrorLA(currentP
     
     % Look-ahead of closest waypoint by idxOffset
     closestWaypointIdx = Utilities.fnLoopArrayIndex(d, closestWaypointIdx, idxOffset);
-    
-    closestWaypoint = [AIW_Data(closestWaypointIdx, 1), AIW_Data(closestWaypointIdx, 2)];
 
-    xI = AIW_Data(closestWaypointIdx, 1);
-    yI = AIW_Data(closestWaypointIdx, 2);
+    closestWaypoint = [AIW_Data(closestWaypointIdx, 1), AIW_Data(closestWaypointIdx, 2)];
 
     if closestWaypointIdx < size(AIW_Data, 1)
 
