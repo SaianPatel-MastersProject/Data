@@ -34,16 +34,18 @@ function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
 
     % Create a table for the CTE data
     % Define the column names
-    columnNames = {'CTE', 'closestWaypointX', 'closestWaypointY', 'HeadingError'};
+    columnNames = {'CTE_CoG', 'CTE', 'closestWaypointX', 'closestWaypointY', 'HeadingError_CoG', 'HeadingError'};
     nRows = size(runStruct.data, 1);
     arrayCTE = zeros([nRows, 1]);
+    arrayCTE_LA = arrayCTE;
     arrayClosestWaypointX = arrayCTE;
     arrayClosestWaypointY = arrayCTE;
     arrayHeadingError = arrayCTE;
+    arrayHeadingError_LA = arrayCTE;
 
     % Create an empty table with the specified column names
     dataPE = table('Size', [nRows, length(columnNames)], ...
-        'VariableTypes', {'double', 'double', 'double', 'double'}, ...
+        'VariableTypes', {'double', 'double', 'double', 'double', 'double', 'double'}, ...
         'VariableNames', columnNames);
 
     % Calculate the heading of the car
@@ -56,19 +58,26 @@ function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
     for i = 1:size(runStruct.data, 1)
 
         currentPoint = [runStruct.data.posX(i), runStruct.data.posY(i), psi(i)];
-        [CTE, closestWaypoint, headingError] = PostProcessing.PE.fnCalculatePathError(currentPoint, AIW_Data);
+        [CTE_CoG, closestWaypoint, headingError_CoG] = PostProcessing.PE.fnCalculatePathError(currentPoint, AIW_Data);
 
-        arrayCTE(i) = CTE;
+        % Get CTE and HE at 3m ahead
+        [CTE_LA, ~, headingError_LA] = PostProcessing.PE.fnCalculatePathErrorLA(currentPoint, AIW_Data, 30);
+
+        arrayCTE(i) = CTE_CoG;
+        arrayCTE_LA(i) = CTE_LA;
         arrayClosestWaypointX(i) = closestWaypoint(1);
         arrayClosestWaypointY(i) = closestWaypoint(2);
-        arrayHeadingError(i) = headingError;
+        arrayHeadingError(i) = headingError_CoG;
+        arrayHeadingError_LA(i) = headingError_LA;
 
     end
 
-    dataPE.CTE = arrayCTE;
+    dataPE.CTE_CoG = arrayCTE;
+    dataPE.CTE = arrayCTE_LA;
     dataPE.closestWaypointX = arrayClosestWaypointX;
     dataPE.closestWaypointY = arrayClosestWaypointY;
-    dataPE.HeadingError = arrayHeadingError;
+    dataPE.HeadingError_CoG = arrayHeadingError;
+    dataPE.HeadingError = arrayHeadingError_LA;
 
     % Write the CTE table as a layer
     % Set the .mat filename
