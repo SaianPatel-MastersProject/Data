@@ -1268,7 +1268,7 @@ classdef multiPlotter
         end
 
         %% Function to plot transfer function
-        function plotTF(obj, inputChannel, outputChannel, mode)
+        function plotTF(obj, inputChannel, outputChannel, mode, bNormalise)
 
             figure("Name", 'Transfer Function');
             hold on
@@ -1281,6 +1281,13 @@ classdef multiPlotter
         
                         x = obj.data(i).lapData.(inputChannel);
                         y = obj.data(i).lapData.(outputChannel);
+
+                        if bNormalise
+
+                            x = 2 * (x - min(x))/(max(x) - min(x)) - 1;
+                            y = 2 * (y - min(y))/(max(y) - min(y)) - 1;
+
+                        end
 
                         nSamples = length(x);
                         fftLength = ceil(nSamples/16);
@@ -1297,7 +1304,7 @@ classdef multiPlotter
                         subplot(3,1,2)
                         hold on
                         plot(tf, angle(txy))
-                        
+
                         subplot(3,1,3)
                         hold on
                         plot(freq, coh)
@@ -1312,10 +1319,17 @@ classdef multiPlotter
                     for i = 1:nRuns
         
                         x = obj.runData(i).runData.(inputChannel);
-                        y = obj.runData(i).runData.(outputChannel);
+                        y = obj.runData(i).runData.(outputChannel) .* 225;
+
+                        if bNormalise
+
+                            x = 2 * (x - min(x))/(max(x) - min(x)) - 1;
+                            y = 2 * (y - min(y))/(max(y) - min(y)) - 1;
+
+                        end
 
                         nSamples = length(x);
-                        fftLength = ceil(nSamples/16);
+                        fftLength = ceil(nSamples/512);
                         windowVector = hanning(fftLength)*2;
                         nOverlap = ceil(7*fftLength/8);
                         [txy,tf] = tfestimate(x,y,windowVector,nOverlap,fftLength, 100);
@@ -1329,8 +1343,6 @@ classdef multiPlotter
                         subplot(3,1,2)
                         hold on
                         plot(tf, angle(txy))
-
-
 
                         subplot(3,1,3)
                         hold on
