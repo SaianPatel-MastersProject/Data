@@ -32,7 +32,7 @@ function fnReplayLA(dataLA, AIW_Data)
         drawnow;
 
         % Control animation speed
-        pause(0.05);
+        % pause(0.01^4);
 
 
     end
