@@ -3,6 +3,9 @@ function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
     % Read in a run .mat file
     load(matFilePath);
 
+    % Downsample
+    % runStruct.data = downsample(runStruct.data, 10, 2);
+
     try
 
         % Directly load AIW using look-up
