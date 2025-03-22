@@ -1531,8 +1531,8 @@ classdef multiPlotter
                     AIW_Data = [xInterp, yInterp];
 
                     % Grey - '#F2F2F2'
-                    % Green - '#189900'
-                    plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#189900', 'LineWidth', 2);
+                    % Darker Green - '#189900'
+                    plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#F2F2F2', 'LineWidth', 2);
 
                 end
 
