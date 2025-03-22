@@ -1427,7 +1427,12 @@ classdef multiPlotter
                 yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
                 AIW_Data = [xInterp, yInterp];
 
-                plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#F2F2F2', 'LineWidth', 2);
+                % Grey - '#F2F2F2'
+                % Green - '#189900'
+                plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#189900', 'LineWidth', 2);
+
+                grid on;
+                grid minor;
 
             end
 
@@ -1525,7 +1530,9 @@ classdef multiPlotter
                     yInterp = interp1(rollingDistance, AIW_Data(:,2), dNew, interpMethod);
                     AIW_Data = [xInterp, yInterp];
 
-                    plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#F2F2F2', 'LineWidth', 2);
+                    % Grey - '#F2F2F2'
+                    % Green - '#189900'
+                    plot(AIW_Data(:,1), AIW_Data(:,2), 'LineStyle','--', 'Color', '#189900', 'LineWidth', 2);
 
                 end
 
@@ -1556,6 +1563,8 @@ classdef multiPlotter
                 ylabel('y (m)');
                 xlim([nCorner_Table.xMin(j), nCorner_Table.xMax(j)])
                 ylim([nCorner_Table.yMin(j), nCorner_Table.yMax(j)])
+                grid on;
+                grid minor;
                 
 
 
