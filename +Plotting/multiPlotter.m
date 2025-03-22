@@ -298,7 +298,7 @@ classdef multiPlotter
 
              steeringScalar = 225;
 
-             subplot(3,1,1);
+             subplot(2,1,1);
              hold on
 
              for i = 1:nLaps
@@ -313,7 +313,7 @@ classdef multiPlotter
              grid;
              grid minor;
 
-             subplot(3,1,2);
+             subplot(2,1,2);
              hold on
 
              for i = 1:nLaps
@@ -326,28 +326,28 @@ classdef multiPlotter
              end
 
              xlabel('Lap Time (s)');
-             ylabel('First Derivative of Steering Angle');
+             ylabel('Steering Velocity (°/s)');
              grid;
              grid minor;
 
-             subplot(3,1,3);
-             hold on
-
-             for i = 1:nLaps
-
-                 % Get dt
-                 dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
-                 dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
-                 ddSteerAngle = [0; diff(dSteerAngle)./ dt];
-
-                 plot(obj.data(i).lapData.tLap, ddSteerAngle);
-
-             end
-
-             xlabel('Lap Time (s)');
-             ylabel('Second Derivative of Steer Angle');
-             grid;
-             grid minor;
+             % subplot(3,1,3);
+             % hold on
+             % 
+             % for i = 1:nLaps
+             % 
+             %     % Get dt
+             %     dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+             %     dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+             %     ddSteerAngle = [0; diff(dSteerAngle)./ dt];
+             % 
+             %     plot(obj.data(i).lapData.tLap, ddSteerAngle);
+             % 
+             % end
+             % 
+             % xlabel('Lap Time (s)');
+             % ylabel('Second Derivative of Steer Angle');
+             % grid;
+             % grid minor;
 
              %% Link Axes
              linkaxes(findall(gcf,'Type','axes'), 'x');
