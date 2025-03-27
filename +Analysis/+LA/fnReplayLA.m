@@ -5,7 +5,7 @@ function fnReplayLA(dataLA, AIW_Data)
     hold on
 
     % Plot the track reference
-    plot(AIW_Data(:,1), AIW_Data(:,2), 'k--')
+    plot(AIW_Data(:,1), AIW_Data(:,2), 'k', 'LineWidth', 8)
 
     % Set the initial car point and LA point
     carPoint = plot(dataLA(1,1), dataLA(1,2), 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b');
@@ -13,14 +13,25 @@ function fnReplayLA(dataLA, AIW_Data)
 
     % Set the legend
     legend('Track', 'Car', 'LA Point')
-    xlabel('X');
-    ylabel('Y');
+    % xlabel('X');
+    % ylabel('Y');
     grid on;
     grid minor;
     axis equal;
+    ylim([-440, 660])
+
+    % Wait for button press
+    waitforbuttonpress;
+    key = get(gcf, 'CurrentCharacter');
+
+    % Loop until spacebar is pressed
+    while key ~= ' '
+        waitforbuttonpress;
+        key = get(gcf, 'CurrentCharacter');
+    end
 
     % Animation loop
-    for i = 1:size(dataLA, 1)
+    for i = 1:5:size(dataLA, 1)
 
         % Update car position
         set(carPoint, 'XData', dataLA(i, 1), 'YData', dataLA(i, 2));
@@ -32,7 +43,7 @@ function fnReplayLA(dataLA, AIW_Data)
         drawnow;
 
         % Control animation speed
-        % pause(0.01^4);
+        pause(0.01^4);
 
 
     end
