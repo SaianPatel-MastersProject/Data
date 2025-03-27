@@ -1391,7 +1391,10 @@ classdef multiPlotter
 
                 lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
 
-                plot(lapData.posX, lapData.posY, 'Color', 'k', 'LineWidth', 6)
+                % plot(lapData.posX, lapData.posY, 'Color', 'k', 'LineWidth', 6)
+                set(gcf, 'Renderer', 'opengl')
+                lineDist = line(lapData.posX, lapData.posY, 'LineWidth', 4);
+                lineDist.Color = [0, 0, 0, 0.1];
 
             end
 
