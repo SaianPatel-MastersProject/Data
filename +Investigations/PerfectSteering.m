@@ -61,13 +61,12 @@ hold on
 scatter(masterKappa, perfectSteering, '.', 'SizeData', 32, 'MarkerEdgeColor', 'r')
 grid on
 grid minor
-colorbar
-% cmap = [linspace(0,1,100)', zeros(100,1), linspace(1,0,100)']; % Blue to red through magenta
-% colormap(cmap);
-
-xlabel('Curvature (\kappa)')
-ylabel('Steering Angle')
-legend({'Human Training Data', 'Perfect Steering'})
+c = colorbar;
+c.Label.String = 'CTE';
+title('Curvature vs Steering Angle with CTE')
+xlabel('Curvature (\kappa)', 'FontWeight','bold')
+ylabel('Steering Angle (\delta)', 'FontWeight','bold')
+legend({'Human Training Data', 'Perfect Steering'}, 'FontSize', 14)
 
 %% Plot results - colourmap for HE
 figure;
@@ -76,13 +75,12 @@ hold on
 scatter(masterKappa, perfectSteering, '.', 'SizeData', 32, 'MarkerEdgeColor', 'r')
 grid on
 grid minor
-colorbar
-% cmap = [linspace(0,1,100)', zeros(100,1), linspace(1,0,100)']; % Blue to red through magenta
-% colormap(cmap);
-
-xlabel('Curvature (\kappa)')
-ylabel('Steering Angle')
-legend({'Human Training Data', 'Perfect Steering'})
+c = colorbar;
+c.Label.String = 'HE';
+title('Curvature vs Steering Angle with HE')
+xlabel('Curvature (\kappa)', 'FontWeight','bold')
+ylabel('Steering Angle (\delta)', 'FontWeight','bold')
+legend({'Human Training Data', 'Perfect Steering'}, 'FontSize', 14)
 
 %% Plot results - colourmap for LA
 figure;
@@ -91,13 +89,12 @@ hold on
 scatter(masterKappa, perfectSteering, '.', 'SizeData', 32, 'MarkerEdgeColor', 'r')
 grid on
 grid minor
-colorbar
-% cmap = [linspace(0,1,100)', zeros(100,1), linspace(1,0,100)']; % Blue to red through magenta
-% colormap(cmap);
-
-xlabel('Curvature (\kappa)')
-ylabel('Steering Angle')
-legend({'Human Training Data', 'Perfect Steering'})
+c = colorbar;
+c.Label.String = 'LA Curvature';
+title('Curvature vs Steering Angle with LA Curvature')
+xlabel('Curvature (\kappa)', 'FontWeight','bold')
+ylabel('Steering Angle (\delta)', 'FontWeight','bold')
+legend({'Human Training Data', 'Perfect Steering'}, 'FontSize', 14)
 
 %% Plot 3D Scatter with derivative of absolute curvature
 absKappa = abs(trainingData.curvature);
