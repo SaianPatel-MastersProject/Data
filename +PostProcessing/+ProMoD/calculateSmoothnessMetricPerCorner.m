@@ -59,6 +59,7 @@ function MChannel = calculateSmoothnessMetricPerCorner(data, channel, track)
 
                 y = channelData .* 225;
                 y = [0; diff(y) ./ dt];
+                y = movmean(y, 51);
                 y = abs(y);
 
             case 'CTE'
@@ -82,7 +83,7 @@ function MChannel = calculateSmoothnessMetricPerCorner(data, channel, track)
         end
 
         % Get the corner ranges
-        cornerRanges = Utilities.fnGetCornerRanges(track);
+        cornerRanges = Utilities.fnGetCornerRanges(track, false);
 
         % Get the number of corners
         nCorners = size(cornerRanges, 1);
