@@ -1,11 +1,20 @@
 %% PostPro
-matFilePath = 'D:\Users\Saian\Workspace\Data\+ProcessedData\2024\FYP11_18\2024_FYP11_18_D6_R04.mat';
-bInterpolate = true;
-nPoints = 10000;
+matFilePath = 'D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_24\2025_FYP03_24_D2_R15.mat';
+
+interpType = 'Distance';
+interpParam = 0.1;
 interpMethod = 'spline';
 
-%% Run CTE
-PostProcessing.CTE.postProcessCTE(matFilePath, bInterpolate, nPoints, interpMethod);
+% Alternative
+% interpType = 'Points';
+% interpParam = 10000;
+% interpMethod = 'spline';
 
-%% Run VE
-PostProcessing.VE.postProcessVE(matFilePath, bInterpolate, nPoints, interpMethod);
+%% Run PE
+PostProcessing.PE.postProcessPE(matFilePath, interpType, interpParam, interpMethod);
+
+%% Run KAP
+PostProcessing.KAP.postProcessKAP(matFilePath, interpType, interpParam, interpMethod);
+
+%% Run ProMoD
+PostProcessing.ProMoD.postProcessProMoD(matFilePath);
