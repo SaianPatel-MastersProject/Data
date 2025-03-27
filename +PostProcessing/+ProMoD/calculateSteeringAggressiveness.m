@@ -115,10 +115,18 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
             % Get the absolute steering angle velocity
             absSteerAngleVelocity = abs(steerAngleVelocity);
 
-            % Integrate absolute steering angle velocity
-            steeringVelocityIntegral = trapz(cornerLapData.lapTime, absSteerAngleVelocity);
+            if isempty(cornerLapData.lapTime) || isempty(absSteerAngleVelocity)
 
-            MSteer_k = (1/abs(totalCorneringDuration)) * steeringVelocityIntegral;
+                MSteer_k = 0;
+
+            else
+
+                % Integrate absolute steering angle velocity
+                steeringVelocityIntegral = trapz(cornerLapData.lapTime, absSteerAngleVelocity);
+
+                MSteer_k = (1/abs(totalCorneringDuration)) * steeringVelocityIntegral;
+
+            end
 
             MSteer_lap(k) = MSteer_k;
 
