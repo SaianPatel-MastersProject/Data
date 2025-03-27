@@ -82,7 +82,7 @@ function MChannel = calculateSmoothnessMetric(data, channel)
         end
 
         % Integrate y over tLap
-        MChannel(i) = trapz(lapData.tLap, y) / tLap(end);
+        MChannel(i) = trapz(tLap, y) / tLap(end);
 
         
 
