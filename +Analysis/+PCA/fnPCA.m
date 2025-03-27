@@ -1,16 +1,16 @@
-function fnPCA(normalisedData)
+function pcaData = fnPCA(normalisedData)
 
     % Exclude the last column (output)
     inputFeatures = table2array(normalisedData);
     inputFeatures = inputFeatures(:, 1:end-1);
 
     % Get the covariance matrix of the input features
-    covMatrix = cov(inputFeatures);
+    pcaData.covMatrix = cov(inputFeatures);
 
     % Get the correlation matrix of the input features
-    corrMatrix = corr(inputFeatures);
+    pcaData.corrMatrix = corr(inputFeatures);
 
     % Perform PCA
-    [coeff, score, latent, tsquared, explained, mu] = pca(inputFeatures);
+    [pcaData.coeff, pcaData.score, pcaData.latent, pcaData.tsquared, pcaData.explained, pcaData.mu] = pca(inputFeatures);
 
 end
