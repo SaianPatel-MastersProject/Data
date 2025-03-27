@@ -20,7 +20,6 @@ function [dLook, dKappa] = fnSinusoidLookAhead(dMin, dMax, dKappaMax, kappa)
     dLook = A * cos(B * dKappa + C) + D;
 
     % Plot curve
-    figure;
 
     figure;
     plot(dKappa, dLook, 'b', 'LineWidth', 2); hold on;
