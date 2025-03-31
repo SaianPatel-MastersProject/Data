@@ -26,7 +26,7 @@ function MSteer = calculateSteeringAggressiveness(runStruct)
         dt = lapData.lapTime(2) - lapData.lapTime(1);
 
         % Get the 'cornering' data
-        corneringLapData = lapData(abs(lapData.steerAngle * steeringScalar ) > deltaMin & abs(lapData.steerAngle* steeringScalar) <= deltaMax, :);
+        corneringLapData = lapData(abs(lapData.steerAngle * steeringScalar ) >= deltaMin & abs(lapData.steerAngle* steeringScalar) <= deltaMax, :);
 
         % Get the change in time for the corner segments
         tSegment = [0; diff(corneringLapData.lapTime)];

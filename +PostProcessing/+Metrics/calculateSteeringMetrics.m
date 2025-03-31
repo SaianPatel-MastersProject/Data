@@ -55,6 +55,9 @@ function summary = calculateSteeringMetrics(runStruct, lapNumber, varargin)
         steerL_pct = (numel(lapData.steerAngle(lapData.steerAngle < -0.01))) / nPoints * 100; 
 
         steerC_pct = 100 - (steerL_pct + steerR_pct);
+
+        % Calculate MSteer across the whole lap
+        MSteer = 1/numel(lapData.tLap * 0.01) * trapz(lapData.tLap, abs(dSteer));
    
 
         % Populate the array
@@ -65,6 +68,7 @@ function summary = calculateSteeringMetrics(runStruct, lapNumber, varargin)
         summary(i,5) = steerL_pct;
         summary(i,6) = steerR_pct;
         summary(i,7) = steerC_pct;
+        summary(i,8) = MSteer;
 
 
     end
@@ -79,6 +83,7 @@ function summary = calculateSteeringMetrics(runStruct, lapNumber, varargin)
         'steerL_pct';...
         'steerR_pct';...
         'steerC_pct';...
+        'MSteer';...
 
     };
 
