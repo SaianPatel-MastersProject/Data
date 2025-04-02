@@ -550,6 +550,59 @@ classdef multiPlotter
 
         end
 
+        %% Function for plotting how TACTE varies over time
+        function plotRollingTACTE(obj)
+
+            figure("Name", 'TACTE Over Time'); % Create a fundamentals figure
+            
+            nLaps = size(obj.data, 2);
+
+            % Plot Steering
+            subplot(2,1,1);
+            hold on
+
+            for i = 1:nLaps
+
+                plot(obj.data(i).lapData.tLap, obj.data(i).lapData.steerAngle * 225);
+
+            end
+            
+            xlabel('Lap Time (s)');
+            ylabel('Steering Angle (deg)');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+            
+            % Plot CTE
+            subplot(2,1,2);
+            hold on
+
+            for i = 1:nLaps
+
+                rollingTACTE = zeros([ size(obj.data(i).lapData, 1) , 1]);
+
+                for j = 2:size(obj.data(i).lapData, 1)
+
+                    rollingTACTE(j) = trapz(obj.data(i).lapData.tLap(1:j), abs(obj.data(i).lapData.CTE(1:j)));
+
+                end
+
+                plot(obj.data(i).lapData.tLap, rollingTACTE);
+
+            end
+            
+            xlabel('Lap Time (s)');
+            ylabel('Rolling TACTE (m)');
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+            
+
+            %% Link Axes
+             linkaxes(findall(gcf,'Type','axes'), 'x');
+
+        end
+
          %% Function for plotting dCTE
         function plotDerivativesCTE(obj)
 
