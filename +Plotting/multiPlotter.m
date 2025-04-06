@@ -27,10 +27,15 @@ classdef multiPlotter
             % Read in a run .mat file
             load(matFilePath);
 
-            % Load Associated Layers
-            runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
-            runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
-            runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+            if ~contains(matFilePath, '_AvgLap')
+
+                % Load Associated Layers - only if the run is not an
+                % average lap run
+                runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+                runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
+                runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+
+            end
             
             % Check how many laps are in the run
             lapsInRun = unique(runStruct.data.lapNumber);
@@ -96,8 +101,17 @@ classdef multiPlotter
             % Add metrics CTE and steering
             for j = 1:numel(lapsInRun)
 
-                obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
-                obj.runData(i).metricsSteer(j,:) = PostProcessing.Metrics.calculateSteeringMetrics(runStruct, lapsInRun(j));
+                if ~contains(matFilePath, '_AvgLap')
+
+                    obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct, lapsInRun(j));
+                    obj.runData(i).metricsSteer(j,:) = PostProcessing.Metrics.calculateSteeringMetrics(runStruct, lapsInRun(j));
+
+                else
+
+                    obj.runData(i).metricsCTE(j,:) = PostProcessing.CTE.calculateCTEMetrics(runStruct);
+                    obj.runData(i).metricsSteer(j,:) = PostProcessing.Metrics.calculateSteeringMetrics(runStruct);
+
+                end
 
             end
 
