@@ -226,7 +226,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.speed * 3.6);
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.speed * 3.6);
 
             end
             
@@ -242,7 +242,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.throttle);
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.throttle);
 
             end
 
@@ -258,7 +258,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.brake);
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.brake);
 
             end
 
@@ -274,7 +274,7 @@ classdef multiPlotter
 
             for i = 1:nLaps
 
-                plot(obj.data(i).lapData.sLapRef, obj.data(i).lapData.steerAngle);
+                plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.steerAngle);
 
             end
 
