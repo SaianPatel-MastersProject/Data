@@ -76,7 +76,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
     for i = 1:nLaps
 
         % Get the data for the lap
-        lapData = runStruct.data(runStruct.data.lapNumber == i - 1, :);
+        % lapData = runStruct.data(runStruct.data.lapNumber == i - 1, :);
+        lapData = runStruct.data(runStruct.data.lapNumber == runStruct.metadata.laps(i).lapNumber, :);
 
         % Create a lap time channel
         lapData.tLap = lapData.time - lapData.time(1);
