@@ -100,7 +100,7 @@ function postProcessAvgLap(matFilePath, lapsFilter)
     avgLapData.time = tLap;
     avgLapData.lapDist = sLap;
     avgLapData.sLapRef = sLap;
-    avgLapData.lapNumber(:) = 99;
+    avgLapData.lapNumber(:) = 1;
 
     % Set the columns to iterate over
     columnNames = runData.Properties.VariableNames;
@@ -168,7 +168,7 @@ function postProcessAvgLap(matFilePath, lapsFilter)
     avgLapMetadata = runStruct.metadata;
 
     % Update the relevant fields
-    avgLapMetadata.laps = struct('lapNumber', 99, 'lapTime', avgLapData.time(end), 'lapType', 1);
+    avgLapMetadata.laps = struct('lapNumber', 1, 'lapTime', avgLapData.time(end), 'lapType', 1);
     avgLapMetadata.fastestLap = avgLapMetadata.laps;
     avgLapMetadata.description = sprintf('%s - Average Lap', avgLapMetadata.runID);
 
