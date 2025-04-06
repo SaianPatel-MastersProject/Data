@@ -163,6 +163,68 @@ classdef multiPlotter
             
         end
 
+        %% Function to add an average lap
+        function obj = addAverageLap(obj, matFilePath)
+
+            % Set the lapNumber as 1 for AvgLaps
+            lapNumber = 1;
+
+            % Read in a run .mat file
+            load(matFilePath);
+
+            % Get the track
+            track = runStruct.metadata.track;
+
+            % Get the runID
+            runID = runStruct.metadata.runID;
+
+            % Get the driver
+            driver = runStruct.metadata.driver;
+
+            %% Read in layers
+            % runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+            % runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
+            % runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+
+            %% Fetch the data for the selected lap
+            lapData = runStruct.data;
+
+            % Add a tLap Channel
+            lapData = addvars(lapData, (lapData.time - lapData.time(1)), 'NewVariableNames', 'tLap');
+
+            % Check current number of entries in the struct
+            nEntries = size(obj.data, 2);
+
+            if isempty(obj.data(1).lapNumber)
+
+                i = 1;
+
+            else
+
+                i = nEntries + 1;
+
+            end
+
+            %% Get the CTE metrics summary
+            obj.data(i).metricsCTE = PostProcessing.CTE.calculateCTEMetrics(runStruct);
+
+            %% Get the Heading Error metrics sumamry
+            obj.data(i).metricsHE = PostProcessing.PE.calculateHeadingErrorMetrics(runStruct);
+
+            obj.data(i).metricsSteer = PostProcessing.Metrics.calculateSteeringMetrics(runStruct);
+
+            %% Populate the struct
+            obj.data(i).runID = runID;
+            obj.data(i).lapNumber = lapNumber;
+            obj.data(i).lapData = lapData;
+            obj.data(i).track = track;
+            obj.data(i).driver = driver;
+
+            %% Update Plotting Tools based on the added lap
+            obj = obj.updateLegendCell();
+            
+        end
+
         %% Function to update the legend cell
         function obj = updateLegendCell(obj)
 
