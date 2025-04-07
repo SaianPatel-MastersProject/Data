@@ -3,12 +3,12 @@
 obj = Plotting.multiPlotter();
 
 %% Load Normal Data
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R04.mat', true, [2:4]); % SM75_SP
+obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R02.mat', true, [2:4]); % SM75_SP
 obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R02.mat', true, [2:4]); % SM75_BX
 obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R01.mat', true, [2:4]); % SM75_LZ
 
 
-obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R04.mat', 4); % SM75_SP
+obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R02.mat', 4); % SM75_SP
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R02.mat', 4); % SM75_BX
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R01.mat', 4); % SM75_LZ
 
