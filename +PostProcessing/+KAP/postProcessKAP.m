@@ -45,6 +45,13 @@ function postProcessKAP(matFilePath, interpType, interpParam, interpMethod)
     closestKappa = zeros([nRows, 1]);
     closestRCurv = zeros([nRows, 1]);
 
+    % Define an array to store LA kappa
+    lookAheadKappa = zeros([nRows, 1]);
+
+    % Define the sigmoid
+    % Get look-ahead sigmoid
+    [dLookOverall, kappaSorted] = Utilities.fnLookAheadDistanceSigmoidCurvature(6, 30, 200, 0.01, kappaInterp);
+
     % Loop through each logged point and get closest kappa and rCurvature
     for i = 1:size(runStruct.data, 1)
 
@@ -59,13 +66,20 @@ function postProcessKAP(matFilePath, interpType, interpParam, interpMethod)
         closestKappa(i) = AIW_Data(closestWaypointIdx, 3);
         closestRCurv(i) = AIW_Data(closestWaypointIdx, 4);
 
+        % Get LA Kappa
+        dLookAhead = interp1(kappaSorted, dLookOverall, abs(closestKappa(i)));
+        iLookAhead = round(dLookAhead/0.1);
+
+        % Look Ahead in Kappa
+        lookAheadKappa(i) = Utilities.fnGetLookAheadValues(kappaInterp, closestWaypointIdx, iLookAhead, 1);
+
     end
 
     % Store as an array
-    dataKAP = [closestKappa, closestRCurv];
+    dataKAP = [closestKappa, closestRCurv, lookAheadKappa];
 
     % Define the column names
-    columnNames = {'kappa', 'rCurvature'};
+    columnNames = {'kappa', 'rCurvature', 'lookAhead1'};
 
     % Save as a table
     dataKAP = array2table(dataKAP, 'VariableNames', columnNames);

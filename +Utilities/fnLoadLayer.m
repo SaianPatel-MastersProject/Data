@@ -45,6 +45,16 @@ function runStruct = fnLoadLayer(runStruct, layer)
             runStruct.data = addvars(runStruct.data, dataKAP.kappa, 'NewVariableNames', 'kappa');
             runStruct.data = addvars(runStruct.data, dataKAP.rCurvature, 'NewVariableNames', 'rCurvature');
 
+            try
+
+                runStruct.data = addvars(runStruct.data, dataKAP.lookAhead1, 'NewVariableNames', 'lookAhead1');
+
+            catch
+
+                warning('No look ahead channel detected in the KAP layer.');
+
+            end
+
         case 'CTE'
 
             % Join CTE layer to the data for the run
