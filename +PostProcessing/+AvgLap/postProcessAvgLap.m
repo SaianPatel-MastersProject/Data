@@ -4,9 +4,9 @@ function postProcessAvgLap(matFilePath, lapsFilter)
     load(matFilePath);
 
     % Load Associated Layers
-    runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
-    runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
-    runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+    % runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+    % runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
+    % runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
 
     % Check how many laps are in the run
     lapsInRun = unique(runStruct.data.lapNumber);
@@ -178,6 +178,7 @@ function postProcessAvgLap(matFilePath, lapsFilter)
 
     % Set the .mat filename
     avgLapFilePath = strrep(avgLapMetadata.matFilePath, '.mat', '_AvgLap.mat');
+    runStruct.metadata.matFilePath = avgLapFilePath;
 
     % Save the .mat
     save(avgLapFilePath, 'runStruct');
