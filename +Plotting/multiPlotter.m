@@ -27,15 +27,15 @@ classdef multiPlotter
             % Read in a run .mat file
             load(matFilePath);
 
-            if ~contains(matFilePath, '_AvgLap')
+            % if ~contains(matFilePath, '_AvgLap')
 
-                % Load Associated Layers - only if the run is not an
-                % average lap run
-                runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
-                runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
-                runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
+            % Load Associated Layers - only if the run is not an
+            % average lap run
+            runStruct = Utilities.fnLoadLayer(runStruct, 'PE');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'KAP');
+            runStruct = Utilities.fnLoadLayer(runStruct, 'ProMoD');
 
-            end
+            % end
             
             % Check how many laps are in the run
             lapsInRun = unique(runStruct.data.lapNumber);
@@ -1703,6 +1703,62 @@ classdef multiPlotter
 
             end
             
+        end
+
+        %% Statistical Distributions & Tests
+        function ksTestResults = fnKSTest(obj, runIdx1, runIdx2)
+
+            % Function to run a two-sample Kolmogorov-Smirnov test -
+            % assessing whether the metrics from the two runs are from the
+            % same distribution. Produces a struct array for each of the
+            % metrics types (CTE, Steer, etc)
+
+            % Set the metrics groups
+            metricsGroups = {'metricsCTE', 'metricsSteer'};
+
+            % Initialise a struct array for the results
+            ksTestResults = struct('metricsGroup', '', 'testResults', table);
+
+            for i = 1:length(metricsGroups)
+
+                % Set the data groups using the specified indices
+                data1 = obj.runData(runIdx1).(metricsGroups{i});
+                data2 = obj.runData(runIdx2).(metricsGroups{i});
+
+                % Get the number of metrics - defined by the number of
+                % columns in the respective metrics tables
+                nMetrics = size(data1, 2);
+
+                % Get the names of the metrics
+                metricsNames = (data1.Properties.VariableNames)';
+
+                % Initialise a table to store the test results
+                h_i = zeros([nMetrics, 1]);
+                p_i = h_i;
+                t_i = h_i;
+                testResults_i = table(metricsNames, h_i, p_i, t_i, 'VariableNames', {'Metric', 'h', 'p', 't'});
+
+                % Iterate over each metric in the group and run the K-S
+                % Test, storing the results in the table
+                for j = 1:nMetrics
+
+                    % Run the test
+                    [h_j, p_j, t_j] = kstest2(data1.(metricsNames{j}), data2.(metricsNames{j}));
+
+                    % Store the results
+                    testResults_i.h(j) = h_j;
+                    testResults_i.p(j) = p_j;
+                    testResults_i.t(j) = t_j;
+
+                end
+
+                % Store the outcome in the struct array
+                ksTestResults(i).metricsGroup = (metricsGroups{i});
+                ksTestResults(i).testResults = testResults_i;
+
+
+            end
+
         end
     end
 end
