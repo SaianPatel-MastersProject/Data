@@ -1285,7 +1285,7 @@ classdef multiPlotter
                     end
             end
 
-            title('PSpectrum')
+            title(sprintf('PSpectrum: %s', channel))
             legend(obj.plottingTools.legendCell);
             grid;
             grid minor;
