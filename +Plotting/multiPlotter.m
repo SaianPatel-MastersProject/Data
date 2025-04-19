@@ -366,7 +366,7 @@ classdef multiPlotter
         end
 
          %% Function for plotting dSteeringAngle
-         function plotDerivativesSteeringAngle(obj)
+         function plotDerivativesSteeringAngle(obj, bFilter)
 
              nLaps = size(obj.data, 2);
 
@@ -397,6 +397,13 @@ classdef multiPlotter
                  % Get dt
                  dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
                  dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+
+                 if bFilter
+
+                     dSteerAngle = movmean(dSteerAngle, 51);
+
+                 end
+                 
                  plot(obj.data(i).lapData.tLap, dSteerAngle);
 
              end
