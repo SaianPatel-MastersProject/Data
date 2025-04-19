@@ -92,12 +92,12 @@ function summary = calculateHeadingErrorMetrics(runStruct, lapNumber)
         % Get the improvement intergal (signed and unsigned)
         rRegions = Utilities.fnFindContinuousRegions(rIdx);
         rHE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, rRegions);
-        rHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), rRegions);
+        rHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), rRegions) / TAHE;
 
         % Get the worsening intergal (signed and unsigned)
         wRegions = Utilities.fnFindContinuousRegions(wIdx);
         wHE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.HeadingError, wRegions);
-        wHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), wRegions);
+        wHE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.HeadingError), wRegions) / TAHE;
 
         % Calculate r_r,w
         rRW = rHE / (rHE + wHE);
