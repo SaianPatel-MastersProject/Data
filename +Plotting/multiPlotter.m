@@ -1760,5 +1760,73 @@ classdef multiPlotter
             end
 
         end
+
+        %% Metrics Comparison & Percentage Difference
+        function metricsComparison = fnMetricsComparison(obj, refIdx, runIdx)
+
+            % Set the metrics groups
+            metricsGroups = {'metricsCTE', 'metricsSteer'};
+
+            % Initialise a struct array
+            metricsComparison = struct('metricGroup', '', 'avgMetricsVals', table);
+
+            % Loop through each metric group
+            for i = 1:length(metricsGroups)
+
+                % Set the data groups using the specified indices
+                refData = obj.runData(refIdx).(metricsGroups{i});
+
+                % Get the number of metrics - defined by the number of
+                % columns in the respective metrics tables
+                nMetrics = size(refData, 2);
+
+                % Get the names of the metrics
+                metricsNames = (refData.Properties.VariableNames)';
+
+                % Get the number of runs compared to the ref
+                nRuns = numel(runIdx);
+
+                % Get the total number of runs
+                nRunsTotal = 1 + nRuns;
+
+                % Initialise arrays to store values
+                avgMetricsVals = zeros([nMetrics, nRunsTotal]);
+                pctDiffs = zeros([nMetrics, nRunsTotal]);
+
+                % Loop through each metric
+                for j = 1:nMetrics
+
+                    avgMetricsVals(j,1) = mean(refData.(metricsNames{j}));
+
+                    for k = 1:nRuns
+
+                        % Get the average of the metric
+                        avgMetricsVals(j, k+1) = mean(obj.runData(runIdx(k)).(metricsGroups{i}).(metricsNames{j}));
+
+                        % Calculate percentage differences
+                        pctDiffs(j, k+1) = ((avgMetricsVals(j, k+1) - avgMetricsVals(j,1))/(avgMetricsVals(j,1)))*100;
+
+
+                    end
+
+                end
+
+            % Store the results as a table
+            metricsComparison(i).metricGroup = metricsGroups{i};
+
+            avgMetricsValsTable = table(metricsNames, 'VariableNames', {'Metric'});
+            avgMetricsValsTable = addvars(avgMetricsValsTable, avgMetricsVals, 'NewVariableNames', {'Average Metric Values'});
+            avgMetricsValsTable = addvars(avgMetricsValsTable, pctDiffs, 'NewVariableNames', {'Percentage Difference'});
+            metricsComparison(i).avgMetricsVals = avgMetricsValsTable;
+
+
+
+
+            end
+
+
+
+
+        end
     end
 end
