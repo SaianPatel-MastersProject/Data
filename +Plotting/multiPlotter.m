@@ -41,6 +41,9 @@ classdef multiPlotter
             lapsInRun = unique(runStruct.data.lapNumber);
             nLaps = length(lapsInRun);
 
+            % Add a dSteer Channel
+            runStruct.data = addvars(runStruct.data, ([0; diff(runStruct.data.steerAngle .* 225)] ./ 0.01), 'NewVariableNames', 'dSteerAngle');
+
             % Apply the laps filter
             if ~isempty(lapsFilter)
 
@@ -143,6 +146,9 @@ classdef multiPlotter
 
             % Add a tLap Channel
             lapData = addvars(lapData, (lapData.time - lapData.time(1)), 'NewVariableNames', 'tLap');
+
+            % Add a dSteer Channel
+            lapData = addvars(lapData, ([0; diff(lapData.steerAngle .* 225)] ./ 0.01), 'NewVariableNames', 'dSteerAngle');
 
             % Check current number of entries in the struct
             nEntries = size(obj.data, 2);
@@ -397,6 +403,7 @@ classdef multiPlotter
                  % Get dt
                  dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
                  dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+                 % dSteerAngle = gradient((obj.data(i).lapData.steerAngle .* steeringScalar), dt);
 
                  if bFilter
 
@@ -1280,6 +1287,38 @@ classdef multiPlotter
                     for i = 1:nLaps
         
                         pspectrum(obj.data(i).lapData.(channel), 100);
+        
+                    end
+                case 'Run'
+
+                    nRuns = size(obj.runData, 2);
+                    for i = 1:nRuns
+        
+                        pspectrum(obj.runData(i).runData.(channel), 100);
+        
+                    end
+            end
+
+            title(sprintf('PSpectrum: %s', channel))
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+        end
+
+        %% Function to plot pspectrum Envelope
+        function plotPSpectrumEnvelope(obj, channel, mode)
+
+            figure;
+            hold on
+
+            switch mode
+                case 'Lap'
+                    nLaps = size(obj.data, 2);
+                    for i = 1:nLaps
+        
+                        [p, f] = pspectrum(obj.data(i).lapData.(channel), 100);
+                        plot(f, pow2db(p), 'Color', 'k', 'LineWidth', 2)
         
                     end
                 case 'Run'
