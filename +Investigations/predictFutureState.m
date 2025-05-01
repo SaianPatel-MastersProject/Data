@@ -5,15 +5,16 @@ obj = Plotting.multiPlotter();
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_14\2025_FYP04_14_D7_R03.mat', 10); % Human
 
 %% Set constants
-previewTime = 0.3;
+previewTime = 0.2;
 n = previewTime/0.01;
 v = 40;
 tDummy = (0.01:0.01:previewTime)';
 
 %% Calculate yawAngles and yawRates at each time step
-dX = [0; diff(obj.data(1).lapData.posX)];
-dY = [0; diff(obj.data(1).lapData.posY)];
+dX = [diff(obj.data(1).lapData.posX)];
+dY = [diff(obj.data(1).lapData.posY)];
 thetaV = atan2(dY, dX);
+thetaV = [thetaV; thetaV(end)];
 
 % Use Euler Forward Integration
 yawAngle = zeros([numel(obj.data(1).lapData.tLap), 1]);
@@ -24,18 +25,19 @@ for i = 2:numel(yawAngle)
 
 
 end
+yawAngle(1,1) = yawAngle(2,1);
 
 %% Calculate steering velocities
 dSteerAngle = [0; diff(obj.data(1).lapData.steerAngle)] ./ 0.01; % Dont convert to degrees
 
 %% At each point, go back 200ms and project forward, assuming steering velocity is constant in the 200ms period
-for i = n:numel(yawRate)
+for i = 2:numel(yawRate)
 
-    dSteer_i = dSteerAngle(i);
+    dSteer_i = dSteerAngle(i-1);
 
-    yawAngle_i = yawAngle(i);
+    yawAngle_i = yawAngle(i-1);
 
-    steerAngle_i = obj.data(1).lapData.steerAngle(i);
+    steerAngle_i = obj.data(1).lapData.steerAngle(i-1);
 
     % Integrate dSteer to get a steering angle profile over the 200ms
     % period
@@ -64,6 +66,25 @@ for i = n:numel(yawRate)
     yF(i,1) = obj.data(1).lapData.posY(i) + dYF;
 end
 
+%% Use the function
+for i = 2:numel(yawRate)
+
+    dSteer_i = dSteerAngle(i-1);
+
+    yawAngle_i = yawAngle(i-1);
+
+    steerAngle_i = obj.data(1).lapData.steerAngle(i-1);
+
+    xV = obj.data(1).lapData.posX(i);
+
+    yV = obj.data(1).lapData.posY(i);
+
+    [xF_i, yF_i, ~] = Utilities.fnPredictFuturePosition(xV, yV, steerAngle_i, dSteer_i, yawAngle_i, 0.2, 40);
+    
+    % Predict future position
+    xF2(i,1) = xF_i;
+    yF2(i,1) = yF_i;
+end
 %% Calculate Errors based on future predictions
 track = 'BAR';
 AIW_Table = Utilities.fnLoadAIW(track);
