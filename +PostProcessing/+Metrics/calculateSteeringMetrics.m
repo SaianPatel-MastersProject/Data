@@ -36,6 +36,9 @@ function summary = calculateSteeringMetrics(runStruct, lapNumber, varargin)
         steeringScalar = 225;
         dSteer = [0; diff(lapData.steerAngle .* steeringScalar) ./ dt];
 
+        % Filter
+        dSteer = movmean(dSteer, 5);
+
         % Minimum steering derivative
         dSteerMin = min(dSteer);
 
@@ -58,7 +61,7 @@ function summary = calculateSteeringMetrics(runStruct, lapNumber, varargin)
         steerC_pct = 100 - (steerL_pct + steerR_pct);
 
         % Calculate MSteer across the whole lap
-        MSteer = 1/numel(lapData.tLap * 0.01) * trapz(lapData.tLap, abs(dSteer));
+        MSteer = 1/(numel(lapData.tLap) * 0.01) * trapz(lapData.tLap, abs(dSteer));
    
 
         % Populate the array
