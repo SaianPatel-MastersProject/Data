@@ -54,8 +54,26 @@ function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
     % Calculate the heading of the car
     dX = diff(runStruct.data.posX);
     dY = diff(runStruct.data.posY);
-    psi = atan2(dY, dX);
-    psi = [psi; psi(end)];
+    % psi = atan2(dY, dX);
+    % psi = [psi; psi(end)];
+    thetaV = atan2(dY, dX);
+    thetaV = [thetaV; thetaV(end)];
+    
+
+    %% Using yaw rate and yaw angles
+     % Use Euler Forward Integration
+     psi = zeros([nRows, 1]);
+     yawRate = runStruct.data.steerAngle .* -1.5;
+     for i = 2:numel(psi)
+
+         psi(i,1) = thetaV(i-1) + yawRate(i-1) * 0.01;
+
+
+     end
+     psi(1,1) = psi(2,1);
+
+
+    %%
 
     % Loop through each logged point and compute CTE
     for i = 1:size(runStruct.data, 1)
@@ -64,7 +82,8 @@ function postProcessPE(matFilePath, interpType, interpParam, interpMethod)
         [CTE_CoG, closestWaypoint, headingError_CoG] = PostProcessing.PE.fnCalculatePathError(currentPoint, AIW_Data);
 
         % Get CTE and HE at 3m ahead
-        [CTE_LA, ~, headingError_LA] = PostProcessing.PE.fnCalculatePathErrorLA(currentPoint, AIW_Data, 30);
+        % [CTE_LA, ~, headingError_LA] = PostProcessing.PE.fnCalculatePathErrorLA(currentPoint, AIW_Data, 30);
+        [CTE_LA, ~, headingError_LA] = PostProcessing.PE.fnCalculateProjectedPathError(currentPoint, AIW_Data, 3);
 
         arrayCTE(i) = CTE_CoG;
         arrayCTE_LA(i) = CTE_LA;
