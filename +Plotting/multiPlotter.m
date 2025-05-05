@@ -1874,5 +1874,84 @@ classdef multiPlotter
 
 
         end
+        
+        %% Confidence Interval
+        function confidenceIntervals = fnConfidenceIntervals(obj, refIdx, runIdx, alpha)
+            
+            % Set the metrics groups
+            metricsGroups = {'metricsCTE', 'metricsSteer'};
+
+            % Initialise a struct array
+            confidenceIntervals = struct('metricGroup', '', 'confidenceIntervals', table);
+
+            % Loop through each metric group
+            for i = 1:length(metricsGroups)
+
+                % Set the data groups using the specified indices
+                refData = obj.runData(refIdx).(metricsGroups{i});
+
+                % Get the number of metrics - defined by the number of
+                % columns in the respective metrics tables
+                nMetrics = size(refData, 2);
+
+                % Get the names of the metrics
+                metricsNames = (refData.Properties.VariableNames)';
+
+                % Get the number of runs compared to the ref
+                nRuns = numel(runIdx);
+
+                % Initialise arrays to store values
+                confidenceIntervalVals = zeros([nMetrics, 2]);
+                withinCI = zeros([nMetrics, nRuns]);
+                metricsAverages = zeros([nMetrics, nRuns]);
+
+                % Loop through each metric
+                for j = 1:nMetrics
+                    
+                    % Compute CI for reference run
+                    % Get number of items in sample
+                    n = numel(refData.(metricsNames{j}));
+
+                    % Get sample mean and std
+                    sampleMean = mean(refData.(metricsNames{j}));
+                    sampleStd = std(refData.(metricsNames{j}));
+
+                    % Compute Standard Error
+                    SE = sampleStd/n;
+
+                    % Compute t-score
+                    tScore = tinv([(alpha/2), (1-alpha/2)], n-1);
+
+                    % Compute CI
+                    CI = sampleMean + tScore * SE;
+
+                    % Assign
+                    confidenceIntervalVals(j,:) = CI;
+
+                    for k = 1:nRuns
+
+                        % Get the average of the metric
+                        metricAvg = mean(obj.runData(runIdx(k)).(metricsGroups{i}).(metricsNames{j}));
+                        metricsAverages(j,k) = metricAvg;
+
+                        % Check whether it is in the CI
+                        withinCI(j,k) = and(metricAvg >= confidenceIntervalVals(j,1), metricAvg >= confidenceIntervalVals(j,2));
+                        
+
+                    end
+
+                end
+
+            % Store the results as a table
+            confidenceIntervals(i).metricGroup = metricsGroups{i};
+
+            confidenceIntervalTable = table(metricsNames, 'VariableNames', {'Metric'});
+            confidenceIntervalTable = addvars(confidenceIntervalTable, confidenceIntervalVals, 'NewVariableNames', {'Confidence Interval'});
+            confidenceIntervalTable = addvars(confidenceIntervalTable, metricsAverages, 'NewVariableNames', {'Average'});
+            confidenceIntervalTable = addvars(confidenceIntervalTable, withinCI, 'NewVariableNames', {'Within CI'});
+            confidenceIntervals(i).confidenceIntervals = confidenceIntervalTable;
+
+            end
+        end
     end
 end
