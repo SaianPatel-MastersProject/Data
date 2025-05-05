@@ -1935,7 +1935,7 @@ classdef multiPlotter
                         metricsAverages(j,k) = metricAvg;
 
                         % Check whether it is in the CI
-                        withinCI(j,k) = and(metricAvg >= confidenceIntervalVals(j,1), metricAvg >= confidenceIntervalVals(j,2));
+                        withinCI(j,k) = and(metricAvg >= confidenceIntervalVals(j,1), metricAvg <= confidenceIntervalVals(j,2));
                         
 
                     end
