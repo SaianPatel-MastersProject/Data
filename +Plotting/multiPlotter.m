@@ -1306,6 +1306,59 @@ classdef multiPlotter
 
         end
 
+        %% Function to plot gated pspectrum
+        function plotGatedPSpectrum(obj, channel, mode, gatingMode)
+
+            figure;
+            hold on
+
+            switch mode
+                case 'Lap'
+                    nLaps = size(obj.data, 2);
+                    for i = 1:nLaps
+        
+                        lapData = obj.data(i).lapData.(channel);
+                        straightIdx = abs(obj.data(i).lapData.kappa) < 0.001;
+
+                        if strcmp(gatingMode, 'Straights')
+
+                            pspectrum(lapData(straightIdx), 100);
+
+                        else
+
+                            pspectrum(lapData(~straightIdx), 100);
+
+                        end
+        
+                    end
+                case 'Run'
+
+                    nRuns = size(obj.runData, 2);
+                    for i = 1:nRuns
+        
+                        runData = obj.runData(i).runData.(channel);
+                        straightIdx = or(obj.runData(i).runData.lapDist < 400, obj.runData(i).runData.lapDist > 2200);
+
+                        if strcmp(gatingMode, 'Straights')
+
+                            pspectrum(runData(straightIdx), 100);
+
+                        else
+
+                            pspectrum(runData(~straightIdx), 100);
+
+                        end
+        
+                    end
+            end
+
+            title(sprintf('Gated PSpectrum: %s (%s)', channel, gatingMode))
+            legend(obj.plottingTools.legendCell);
+            grid;
+            grid minor;
+
+        end
+
         %% Function to plot pspectrum Envelope
         function plotPSpectrumEnvelope(obj, channel, mode)
 
