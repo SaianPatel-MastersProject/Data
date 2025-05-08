@@ -1306,6 +1306,102 @@ classdef multiPlotter
 
         end
 
+        %% Function to plot pspectrum for rCTE, wCTE, hCTE
+        function plotRWH_PSpectrum(obj, channel, mode)
+
+            figure;
+            title(sprintf('PSpectrum: %s', channel))
+            hold on
+
+            switch mode
+                case 'Lap'
+                    nLaps = size(obj.data, 2);
+                    for i = 1:nLaps
+                        
+                        dACTE = [0; diff(obj.data(i).lapData.CTE)] ./ 0.01;
+                        rIdx = dACTE < -0.05;
+                        wIdx = dACTE > 0.05;
+                        hIdx = and(~rIdx, ~wIdx);
+
+                        channelData = obj.data(i).lapData.(channel);
+
+                        subplot(3,1,1)
+                        hold on
+                        pspectrum(channelData(rIdx), 100);
+                        xlim([0, 5]);
+
+                        subplot(3,1,2)
+                        hold on
+                        pspectrum(channelData(wIdx), 100);
+                        xlim([0, 5]);
+
+                        subplot(3,1,3)
+                        hold on
+                        pspectrum(channelData(hIdx), 100);
+                        xlim([0, 5]);
+        
+                    end
+
+                    subplot(3,1,1)
+                    grid;
+                    grid minor;
+                    subplot(3,1,2)
+                    grid;
+                    grid minor;
+                    subplot(3,1,3)
+                    grid;
+                    grid minor;
+                    % Link Axes
+                    linkaxes(findall(gcf,'Type','axes'), 'x');
+
+                case 'Run'
+
+                    nRuns = size(obj.runData, 2);
+                    for i = 1:nRuns
+
+                        dACTE = [0; diff(obj.runData(i).runData.CTE)] ./ 0.01;
+                        rIdx = dACTE < -0.05;
+                        wIdx = dACTE > 0.05;
+                        hIdx = and(~rIdx, ~wIdx);
+
+                        channelData = obj.runData(i).runData.(channel);
+
+                        subplot(3,1,1)
+                        hold on
+                        pspectrum(channelData(rIdx), 100);
+                        xlim([0, 5]);
+
+                        subplot(3,1,2)
+                        hold on
+                        pspectrum(channelData(wIdx), 100);
+                        xlim([0, 5]);
+
+                        subplot(3,1,3)
+                        hold on
+                        pspectrum(channelData(hIdx), 100);
+                        xlim([0, 5]);
+        
+                    end
+                    subplot(3,1,1)
+                    grid;
+                    grid minor;
+                    subplot(3,1,2)
+                    grid;
+                    grid minor;
+                    subplot(3,1,3)
+                    grid;
+                    grid minor;
+                    % Link Axes
+                    linkaxes(findall(gcf,'Type','axes'), 'x');
+
+            end
+
+            title(sprintf('PSpectrum: %s', channel))
+            legend(obj.plottingTools.legendCell);
+            
+
+        end
+
         %% Function to plot gated pspectrum
         function plotGatedPSpectrum(obj, channel, mode, gatingMode)
 
