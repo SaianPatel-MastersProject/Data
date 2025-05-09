@@ -443,6 +443,67 @@ classdef multiPlotter
              linkaxes(findall(gcf,'Type','axes'), 'x');
          end
       
+         %% Function for plotting dSteeringAngle
+         function plotYawRate(obj, yawRateGains)
+
+             nLaps = size(obj.data, 2);
+
+             figure("Name", 'Steering & Yaw Rate');
+
+             steeringScalar = 225;
+
+             subplot(2,1,1);
+             hold on
+
+             for i = 1:nLaps
+
+                 plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.steerAngle * steeringScalar);
+
+             end
+
+             xlabel('Lap Time (s)');
+             ylabel('Steering Angle (°)');
+             legend(obj.plottingTools.legendCell);
+             grid;
+             grid minor;
+
+             subplot(2,1,2);
+             hold on
+
+             for i = 1:nLaps
+                 
+                 plot(obj.data(i).lapData.lapDist, (obj.data(i).lapData.steerAngle * steeringScalar * yawRateGains(i)));
+
+             end
+
+             xlabel('Lap Time (s)');
+             ylabel('Yaw Rate (°/s)');
+             grid;
+             grid minor;
+
+             % subplot(3,1,3);
+             % hold on
+             % 
+             % for i = 1:nLaps
+             % 
+             %     % Get dt
+             %     dt = obj.data(i).lapData.tLap(2) - obj.data(i).lapData.tLap(1);
+             %     dSteerAngle = [0; diff(obj.data(i).lapData.steerAngle .* steeringScalar)./ dt];
+             %     ddSteerAngle = [0; diff(dSteerAngle)./ dt];
+             % 
+             %     plot(obj.data(i).lapData.tLap, ddSteerAngle);
+             % 
+             % end
+             % 
+             % xlabel('Lap Time (s)');
+             % ylabel('Second Derivative of Steer Angle');
+             % grid;
+             % grid minor;
+
+             %% Link Axes
+             linkaxes(findall(gcf,'Type','axes'), 'x');
+         end
+
         %% Function for plotting racing line
         function plotRacingLine(obj, plotAIW)
 
