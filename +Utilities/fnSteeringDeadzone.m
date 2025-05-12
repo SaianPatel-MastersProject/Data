@@ -7,9 +7,11 @@ function steeringDeadzoneData = fnSteeringDeadzone(data, maxLapDist)
     
     % Find where CTE begins to decrease - this is signified by the
     % derivative of CTE being close to 0.
-    [~, dCTE_peaks_locs] = findpeaks(abs([0; diff(straightData.CTE)]./0.01));
+    [~, CTE_peaks_locs_pos] = findpeaks((movmean(straightData.CTE, 5)), 'MinPeakProminence', 0.005);
+    [~, CTE_peaks_locs_neg] = findpeaks(-(movmean(straightData.CTE, 5)), 'MinPeakProminence', 0.005);
+    CTE_peaks_locs = [CTE_peaks_locs_pos; CTE_peaks_locs_neg];
 
-    decreasingCTEdata = straightData(dCTE_peaks_locs, :);
+    decreasingCTEdata = straightData(CTE_peaks_locs, :);
 
     % Store some important information about the deadzone as a struct
     steeringDeadzoneData.data = decreasingCTEdata;
