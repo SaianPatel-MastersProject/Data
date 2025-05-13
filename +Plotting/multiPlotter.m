@@ -1327,11 +1327,105 @@ classdef multiPlotter
             end
 
             % Customize plot
-            title('Average Lap with Variability Envelope');
+            title('Variability Envelope');
             xlabel('Lap Distance (m)');
             ylabel(channel);
-            legend('Mean ± Std Dev', 'Min-Max', 'Average', 'Human', 'FFNN', 'Location', 'Best');
             grid on;
+            grid minor;
+            hold off;
+
+        end
+
+        %% Function to show envelopes
+        function plotVariability(obj, runIdx, channel, bOverlayLaps)
+
+            figure;
+            hold on
+
+            nLaps = size(obj.runData(runIdx).lapNumbers,1);
+
+            % Get the largest start distance and smallest end distance for the set of laps
+            lapStart = -1;
+            lapEnd = 1e6;
+
+            for i = 1:nLaps
+
+                lap_i = obj.runData(runIdx).lapNumbers(i);
+
+                lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
+
+                lapStart_i = min(lapData.lapDist);
+
+                lapEnd_i = max(lapData.lapDist);
+
+                % Update as necessary
+                if lapStart_i > lapStart
+
+                    lapStart = lapStart_i;
+
+                end
+
+                if lapEnd_i < lapEnd
+
+                    lapEnd = lapEnd_i;
+
+                end
+
+            end
+
+            % Re-interpolate to a common sLap vector
+            nPoints = 2000;
+            sLap = linspace(lapStart, lapEnd, nPoints)';
+
+            % Create a new array of channel data for each lap
+            channelArray = zeros([nPoints, nLaps]);
+
+            for i = 1:nLaps
+
+                % Interpolate the lap data and store it
+                lap_i = obj.runData(runIdx).lapNumbers(i);
+
+                lapData = obj.runData(runIdx).runData(obj.runData(runIdx).runData.lapNumber == lap_i, :);
+
+                % Find where lapDist stutters
+                dLapDist = [1; diff(lapData.lapDist)];
+                stutterIdx = dLapDist ~= 0;
+                lapData = lapData(stutterIdx, :);
+
+                % 
+                channelArray(:,i) = interp1(lapData.lapDist, lapData.(channel), sLap);
+
+                set(gcf, 'Renderer', 'opengl')
+                lineDist = line(sLap, channelArray(:,i), 'LineWidth', 2);
+                lineDist.Color = [0, 0, 0, 0.1];
+
+            end
+            
+            meanValues = mean(channelArray, 2);
+            % Plot mean values
+            plot(sLap, meanValues, 'r', 'LineWidth', 1, 'DisplayName', 'Average');
+
+
+            % Get the number of specified laps
+            nLaps = size(obj.data, 2);
+
+            if and(bOverlayLaps, nLaps > 0)
+
+                % Plot each lap
+                for i = 1:nLaps
+
+                    plot(obj.data(i).lapData.lapDist, obj.data(i).lapData.(channel),  'LineWidth', 2);
+
+                end
+
+            end
+
+            % Customize plot
+            title('All Laps');
+            xlabel('Lap Distance (m)');
+            ylabel(channel);
+            grid on;
+            grid minor;
             hold off;
 
         end
