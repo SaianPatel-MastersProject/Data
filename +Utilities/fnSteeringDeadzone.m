@@ -14,7 +14,9 @@ function steeringDeadzoneData = fnSteeringDeadzone(data, maxLapDist)
     decreasingCTEdata = straightData(CTE_peaks_locs, :);
 
     % Store some important information about the deadzone as a struct
+    steeringDeadzoneData.straightData = straightData;
     steeringDeadzoneData.data = decreasingCTEdata;
+    steeringDeadzoneData.peaksLocs = CTE_peaks_locs;
     steeringDeadzoneData.signedMean = mean(decreasingCTEdata.CTE);
     steeringDeadzoneData.signedStd = std(decreasingCTEdata.CTE);
     steeringDeadzoneData.unsignedMean = mean(abs(decreasingCTEdata.CTE));
