@@ -21,6 +21,8 @@ function steeringDeadzoneData = fnSteeringDeadzone(data, maxLapDist)
     steeringDeadzoneData.signedStd = std(decreasingCTEdata.CTE);
     steeringDeadzoneData.unsignedMean = mean(abs(decreasingCTEdata.CTE));
     steeringDeadzoneData.unsignedStd = std(abs(decreasingCTEdata.CTE));
+    steeringDeadzoneData.posMean = mean(decreasingCTEdata.CTE(decreasingCTEdata.CTE > 0));
+    steeringDeadzoneData.negMean = mean(decreasingCTEdata.CTE(decreasingCTEdata.CTE < 0));
     
 
 
