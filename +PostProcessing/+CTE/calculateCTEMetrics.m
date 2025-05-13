@@ -162,6 +162,18 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         % Get the number of steering corrections
         nCorrectionsSteering = Utilities.fnFindCorrections(lapData.steerAngle);
 
+        
+        % Get the pos and neg deadzone means
+        if i == 1 || i == lapsInRun(end)+1
+
+            steeringDeadzoneData.posMean = 0;
+            steeringDeadzoneData.negMean = 0;
+
+        else
+            steeringDeadzoneData = Utilities.fnSteeringDeadzone(lapData, 400);
+
+        end
+
         % Populate the array
         summary(i,1) = TCTE;
         summary(i,2) = TACTE;
@@ -182,6 +194,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         summary(i,17) = nCorrectionsSteering;
         summary(i,18) = TACTE_concat;
         summary(i,19) = lapTime;
+        summary(i,20) = steeringDeadzoneData.posMean;
+        summary(i,21) = steeringDeadzoneData.negMean;
 
     end
         
@@ -206,7 +220,9 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         'nCrossesCTE';...
         'nCorrectionSteering';...
         'TACTE_Concat';...
-        'LapTime';
+        'LapTime'; ...
+        'DeadzonePosMean';...
+        'DeadzoneNegMean';
     };
 
     summary = array2table(summary, 'VariableNames', columnNames);
