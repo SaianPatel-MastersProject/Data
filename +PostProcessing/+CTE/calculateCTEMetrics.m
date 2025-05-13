@@ -196,6 +196,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         summary(i,19) = lapTime;
         summary(i,20) = steeringDeadzoneData.posMean;
         summary(i,21) = steeringDeadzoneData.negMean;
+        summary(i,22) = nCorrectionsSteering / nCorrectionsCTE;
 
     end
         
@@ -222,7 +223,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         'TACTE_Concat';...
         'LapTime'; ...
         'DeadzonePosMean';...
-        'DeadzoneNegMean';
+        'DeadzoneNegMean';...
+        'SteeringToCTE';
     };
 
     summary = array2table(summary, 'VariableNames', columnNames);
