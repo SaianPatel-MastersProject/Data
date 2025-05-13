@@ -2257,5 +2257,54 @@ classdef multiPlotter
 
             end
         end
+
+        %% Function to plot steering deadzone
+        function plotSteeringDeadzone(obj, maxLapDist, dataMode)
+
+            figure("Name", 'Steering Deadzone Plot')
+            hold on
+
+            switch dataMode
+
+                case 'Lap'
+
+                    % Get the number of laps
+                    nLaps = size(obj.data, 2);
+
+                    for i = 1:nLaps
+
+                        % Call the deadzone function
+                        steeringDeadzoneData = Utilities.fnSteeringDeadzone(obj.data(i).lapData, maxLapDist);
+
+                        plot(steeringDeadzoneData.straightData.lapDist, steeringDeadzoneData.straightData.CTE);
+                        scatter(steeringDeadzoneData.data.lapDist, steeringDeadzoneData.data.CTE, 'filled', 'MarkerFaceColor', 'k');
+                        % yline(steeringDeadzoneData.unsignedMean, 'k--');
+
+                    end
+
+
+                case 'Run'
+
+                    % Get the number of runs
+                    nRuns = size(obj.runData, 2);
+
+                    for i = 1:nRuns
+
+                        % Call the deadzone function
+                        steeringDeadzoneData = Utilities.fnSteeringDeadzone(obj.runData(i).runData, maxLapDist);
+
+                        plot(steeringDeadzoneData.straightData.CTE);
+                        scatter(steeringDeadzoneData.peaksLocs, steeringDeadzoneData.data.CTE, 'filled', 'MarkerFaceColor', 'k');
+                        % yline(steeringDeadzoneData.unsignedMean, 'k--');
+
+                    end
+
+            end
+            
+
+
+
+
+        end
     end
 end
