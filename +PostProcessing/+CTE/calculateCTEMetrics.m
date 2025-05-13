@@ -72,6 +72,16 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
     % Create a summary array
     summary = zeros([nLaps, 6]);
 
+    % Create a lap time channel
+    runStruct.data.tLap = runStruct.data.time - runStruct.data.time(1);
+
+    % Get the integral of absolute CTE
+    runData = runStruct.data(runStruct.data.lapNumber > 0 , :);
+    lapsInRun = unique(runStruct.data.lapNumber);
+    runData = runData(runData.lapNumber < lapsInRun(end), :);
+    % TACTE_concat = (1 / runStruct.data.tLap(end)) * trapz(runStruct.data.tLap, abs(runStruct.data.CTE));
+    TACTE_concat = (1 / runData.tLap(end)) * trapz(runData.tLap, abs(runData.CTE));
+
     % Loop through each lap
     for i = 1:nLaps
 
@@ -81,6 +91,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
 
         % Create a lap time channel
         lapData.tLap = lapData.time - lapData.time(1);
+        lapTime = lapData.tLap(end);
 
         % Get dt
         dt = lapData.tLap(2) - lapData.tLap(1);
@@ -91,17 +102,21 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         % Get the derivative of abs CTE
         dACTE = [0; diff(abs(lapData.CTE)) ./ dt];
 
+        % Filter dACTE
+        dACTE = movmean(dACTE, 51);
+
         % Get the overall integral of CTE
         TCTE = trapz(lapData.tLap, lapData.CTE);
 
         % Get the integral of absolute CTE
-        TACTE = trapz(lapData.tLap, abs(lapData.CTE));
+        TACTE = (1 / lapData.tLap(end)) * trapz(lapData.tLap, abs(lapData.CTE));
+        % TACTE = trapz(lapData.tLap, abs(lapData.CTE));
 
         % Find where absolute CTE is improving (dCTE < 0)
-        rIdx = (dACTE) < -0.1;
+        rIdx = (dACTE) < -0.05;
 
         % Find where absolute CTE is worsening (dCTE > 0)
-        wIdx = (dACTE) > 0.1;
+        wIdx = (dACTE) > 0.05;
 
         % Find where absolute CTE is held
         hIdx = and(~rIdx, ~wIdx);
@@ -123,7 +138,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         hRegions = Utilities.fnFindContinuousRegions(hIdx);
         hCTE_bias = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, lapData.CTE, hRegions);
         % hCTE = Utilities.fnCalculateRegionWiseIntegral(lapData.tLap, abs(lapData.CTE), hRegions) / TACTE;
-        hCTE = 1 - (rCTE + wCTE);
+        hCTE = 100 - (rCTE + wCTE);
         hCTE_pct = 100 - (rCTE_pct + wCTE_pct);
 
         % Sanity plot
@@ -139,7 +154,7 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         rRW = rCTE / (rCTE + wCTE);
 
         % Get the number of CTE corrections
-        nCorrectionsCTE = Utilities.fnFindCorrections(lapData.CTE);
+        nCorrectionsCTE = Utilities.fnFindCorrections(movmean(lapData.CTE,51));
 
         % Get the number of CTE=0 crosses
         [nCrossesCTE, ~] = Utilities.fnFindXCrosses(lapData.CTE);
@@ -165,6 +180,8 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         summary(i,15) = nCorrectionsCTE;
         summary(i,16) = nCrossesCTE;
         summary(i,17) = nCorrectionsSteering;
+        summary(i,18) = TACTE_concat;
+        summary(i,19) = lapTime;
 
     end
         
@@ -187,7 +204,9 @@ function summary = calculateCTEMetrics(runStruct, lapNumber, varargin)
         'hCTE_pct';...
         'nCorrectionsCTE';...
         'nCrossesCTE';...
-        'nCorrectionSteering'
+        'nCorrectionSteering';...
+        'TACTE_Concat';...
+        'LapTime';
     };
 
     summary = array2table(summary, 'VariableNames', columnNames);
