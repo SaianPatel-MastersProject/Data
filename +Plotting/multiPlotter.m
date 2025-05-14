@@ -461,7 +461,7 @@ classdef multiPlotter
 
              end
 
-             xlabel('Lap Time (s)');
+             xlabel('Lap Distance (m)');
              ylabel('Steering Angle (°)');
              legend(obj.plottingTools.legendCell);
              grid;
@@ -476,7 +476,7 @@ classdef multiPlotter
 
              end
 
-             xlabel('Lap Time (s)');
+             xlabel('Lap Distance (m)');
              ylabel('Yaw Rate (°/s)');
              grid;
              grid minor;
