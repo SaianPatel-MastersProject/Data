@@ -31,21 +31,23 @@ function fnReplayLA(dataLA, AIW_Data)
     end
 
     % Animation loop
-    for i = 1:5:size(dataLA, 1)
-
-        % Update car position
-        set(carPoint, 'XData', dataLA(i, 1), 'YData', dataLA(i, 2));
-        
-        % Update LA point position
-        set(lookAheadPoint, 'XData', dataLA(i, 3), 'YData', dataLA(i, 4));
-        
-        % Update the plot
-        drawnow;
-
-        % Control animation speed
-        pause(0.01^4);
-
-
+    while 1 > 0
+        for i = 1:5:size(dataLA, 1)
+    
+            % Update car position
+            set(carPoint, 'XData', dataLA(i, 1), 'YData', dataLA(i, 2));
+            
+            % Update LA point position
+            set(lookAheadPoint, 'XData', dataLA(i, 3), 'YData', dataLA(i, 4));
+            
+            % Update the plot
+            drawnow;
+    
+            % Control animation speed
+            pause(0.01^4);
+    
+    
+        end
     end
 
     
