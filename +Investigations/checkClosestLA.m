@@ -1,6 +1,6 @@
 %% Closest LA Point Check
 
-matFilePath = "D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_24\2025_FYP03_24_D4_R01.mat";
+matFilePath = "D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_24\2025_FYP03_24_D4_R02.mat";
 
 load(matFilePath)
 

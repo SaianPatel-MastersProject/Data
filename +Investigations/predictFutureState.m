@@ -31,13 +31,13 @@ yawAngle(1,1) = yawAngle(2,1);
 dSteerAngle = [0; diff(obj.data(1).lapData.steerAngle)] ./ 0.01; % Dont convert to degrees
 
 %% At each point, go back 200ms and project forward, assuming steering velocity is constant in the 200ms period
-for i = 2:numel(yawRate)
+for i = n+1:numel(yawRate)
 
-    dSteer_i = dSteerAngle(i-1);
+    dSteer_i = dSteerAngle(i-n);
 
-    yawAngle_i = yawAngle(i-1);
+    yawAngle_i = yawAngle(i-n);
 
-    steerAngle_i = obj.data(1).lapData.steerAngle(i-1);
+    steerAngle_i = obj.data(1).lapData.steerAngle(i-n);
 
     % Integrate dSteer to get a steering angle profile over the 200ms
     % period
@@ -117,7 +117,7 @@ plot(futureCTE)
 
 %%
 figure;
-tQ = (1:100:numel(xF))';
+tQ = (1:10:numel(xF))';
 plot(xRef, yRef, 'Color', 'black', 'LineStyle', '--', 'LineWidth', 2)
 hold on
 plot(obj.data(1).lapData.posX, obj.data(1).lapData.posY, 'Color', 'red', 'LineWidth', 2)

@@ -6,21 +6,34 @@ obj = Plotting.multiPlotter();
 obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02.mat', true, [2:31]); % SP
 obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08.mat', true, [1:21]); % BX
 obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05.mat', true, [2:20]); % LZ
-
+% obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_14\2025_FYP04_14_D5_R02.mat', true, [2:4]); % PID
 
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02.mat', 31); % SP
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08.mat', 21); % BX
 obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05.mat', 20); % LZ
+% obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_14\2025_FYP04_14_D5_R02.mat', 4); % PID
 
 %% Load Average Laps
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02_AvgLap.mat', true, []); % SP
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08_AvgLap.mat', true, []); % BX
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05_AvgLap.mat', true, []); % LZ
+objAvg = Plotting.multiPlotter();
+objAvg = objAvg.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02_AvgLap.mat', true, []); % SP
+objAvg = objAvg.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08_AvgLap.mat', true, []); % BX
+objAvg = objAvg.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05_AvgLap.mat', true, []); % LZ
 
 
-obj = obj.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02_AvgLap.mat'); % SP
-obj = obj.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08_AvgLap.mat'); % BX
-obj = obj.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05_AvgLap.mat'); % LZ
+objAvg = objAvg.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP02_03\2025_FYP02_03_D1_R02_AvgLap.mat'); % SP
+objAvg = objAvg.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R08_AvgLap.mat'); % BX
+objAvg = objAvg.addAverageLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D5_R05_AvgLap.mat'); % LZ
+
+%% Get Avg Tables
+avgMetricsCTE(1,:) = mean(obj.runData(1).metricsCTE,1);
+avgMetricsCTE(2,:) = mean(obj.runData(2).metricsCTE,1);
+avgMetricsCTE(3,:) = mean(obj.runData(3).metricsCTE,1);
+avgMetricsCTE(4,:) = mean(obj.runData(4).metricsCTE,1);
+
+avgMetricsSteer(1,:) = mean(obj.runData(1).metricsSteer,1);
+avgMetricsSteer(2,:) = mean(obj.runData(2).metricsSteer,1);
+avgMetricsSteer(3,:) = mean(obj.runData(3).metricsSteer,1);
+avgMetricsSteer(4,:) = mean(obj.runData(4).metricsSteer,1);
 
 %% Plot distributions of metrics
 figure;
@@ -74,9 +87,9 @@ legend({'SP', 'BX', 'LZ'})
 %%
 figure;
 hold on
-histogram(obj.runData(1).metricsSteer.MSteer * 100, 6, "Normalization", "percentage");
-histogram(obj.runData(2).metricsSteer.MSteer * 100, 6, "Normalization", "percentage");
-histogram(obj.runData(3).metricsSteer.MSteer * 100, 6, "Normalization", "percentage");
+histogram(obj.runData(1).metricsSteer.MSteer, 6, "Normalization", "percentage");
+histogram(obj.runData(2).metricsSteer.MSteer, 6, "Normalization", "percentage");
+histogram(obj.runData(3).metricsSteer.MSteer, 6, "Normalization", "percentage");
 xlabel('MSteer')
 ylabel('Frequency (%)')
 legend({'SP', 'BX', 'LZ'})
@@ -138,5 +151,15 @@ histogram(obj.runData(1).metricsSteer.steerC_pct, 6, "Normalization", "percentag
 histogram(obj.runData(2).metricsSteer.steerC_pct, 6, "Normalization", "percentage");
 histogram(obj.runData(3).metricsSteer.steerC_pct, 6, "Normalization", "percentage");
 xlabel('Centred Steering (%)')
+ylabel('Frequency (%)')
+legend({'SP', 'BX', 'LZ'})
+
+%% Plot distributions of metrics
+figure;
+hold on
+histogram(obj.runData(1).metricsCTE.LapTime, 6, "Normalization", "percentage");
+histogram(obj.runData(2).metricsCTE.LapTime, 6, "Normalization", "percentage");
+histogram(obj.runData(3).metricsCTE.LapTime, 6, "Normalization", "percentage");
+xlabel('Lap Time (s)')
 ylabel('Frequency (%)')
 legend({'SP', 'BX', 'LZ'})

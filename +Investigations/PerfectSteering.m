@@ -56,17 +56,21 @@ legend({'Human Training Data', 'Perfect Steering'})
 
 %% Plot results - colourmap for CTE
 figure;
-scatter( trainingData.curvature, trainingData.steerAngle, 4, trainingData.CTE, 'filled')
+p1 = scatter( trainingData.curvature, trainingData.steerAngle, 4, (trainingData.CTE), 'filled');
 hold on
-scatter(masterKappa, perfectSteering, '.', 'SizeData', 32, 'MarkerEdgeColor', 'r')
+% p2 = scatter(masterKappa, perfectSteering, '.', 'SizeData', 32, 'MarkerEdgeColor', 'r');
+p2 = scatter(masterKappa, perfectSteering, 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor','r');
 grid on
 grid minor
 c = colorbar;
-c.Label.String = 'CTE';
-title('Curvature vs Steering Angle with CTE')
-xlabel('Curvature (\kappa)', 'FontWeight','bold')
-ylabel('Steering Angle (\delta)', 'FontWeight','bold')
-legend({'Human Training Data', 'Perfect Steering'}, 'FontSize', 14)
+c.Label.String = 'CTE $C$ [m]';
+c.Label.Interpreter = 'latex';
+% title('Curvature vs Steering Angle with CTE')
+xlabel('Curvature $\kappa$ [1/m])', 'Interpreter','latex')
+ylabel('Steering Angle $\delta$ [deg]', 'Interpreter','latex')
+legend({'Human Demonstration Data', 'Ideal Steering'}, 'Interpreter','latex')
+set(gca,"TickLabelInterpreter",'latex')
+fontsize(24, "points");
 
 %% Plot results - colourmap for HE
 figure;

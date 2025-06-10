@@ -1,26 +1,26 @@
 %% Compare Drivers
 
-obj = Plotting.multiPlotter();
-
-%% Load Normal Data
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R02.mat', true, [2:4]); % SM75_SP
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R02.mat', true, [2:4]); % SM75_BX
-obj = obj.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R01.mat', true, [2:4]); % SM75_LZ
+objFFNN = Plotting.multiPlotter();
 
 
-obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP03_31\2025_FYP03_31_D3_R02.mat', 4); % SM75_SP
-obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R02.mat', 4); % SM75_BX
-obj = obj.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP04_07\2025_FYP04_07_D1_R01.mat', 4); % SM75_LZ
+objFFNN = objFFNN.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R08.mat', true, [2:4]); % SM75_SP
+objFFNN = objFFNN.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R09.mat', true, [2:4]); % SM75_BX
+objFFNN = objFFNN.addRun('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R10.mat', true, [2:4]); % SM75_LZ
+
+
+objFFNN = objFFNN.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R08.mat', 4); % SM75_SP
+objFFNN = objFFNN.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R09.mat', 4); % SM75_BX
+objFFNN = objFFNN.addLap('D:\Users\Saian\Workspace\Data\+ProcessedData\2025\FYP05_12\2025_FYP05_12_D3_R10.mat', 4); % SM75_LZ
 
 %% Get the averages of the metrics
-avgMetricsCTE(1,:) = mean(obj.runData(1).metricsCTE,1);
-avgMetricsCTE(2,:) = mean(obj.runData(2).metricsCTE,1);
-avgMetricsCTE(3,:) = mean(obj.runData(3).metricsCTE,1);
+avgMetricsCTE(1,:) = mean(objFFNN.runData(1).metricsCTE,1);
+avgMetricsCTE(2,:) = mean(objFFNN.runData(2).metricsCTE,1);
+avgMetricsCTE(3,:) = mean(objFFNN.runData(3).metricsCTE,1);
 
 
-avgMetricsSteer(1,:) = mean(obj.runData(1).metricsSteer,1);
-avgMetricsSteer(2,:) = mean(obj.runData(2).metricsSteer,1);
-avgMetricsSteer(3,:) = mean(obj.runData(3).metricsSteer,1);
+avgMetricsSteer(1,:) = mean(objFFNN.runData(1).metricsSteer,1);
+avgMetricsSteer(2,:) = mean(objFFNN.runData(2).metricsSteer,1);
+avgMetricsSteer(3,:) = mean(objFFNN.runData(3).metricsSteer,1);
 %% Plot distributions of metrics
 figure;
 hold on
@@ -83,9 +83,9 @@ legend({'SP', 'BX', 'LZ'})
 %%
 figure;
 hold on
-histogram(obj.runData(1).runData.steerAngle * 225, 24, "Normalization", "percentage");
-histogram(obj.runData(2).runData.steerAngle * 225, 24, "Normalization", "percentage");
-histogram(obj.runData(3).runData.steerAngle * 225, 24, "Normalization", "percentage");
+histogram(objFFNN.runData(1).runData.steerAngle * 225, 24, "Normalization", "percentage");
+histogram(objFFNN.runData(2).runData.steerAngle * 225, 24, "Normalization", "percentage");
+histogram(objFFNN.runData(3).runData.steerAngle * 225, 24, "Normalization", "percentage");
 xlabel('Steering Angle (deg)')
 ylabel('Frequency (%)')
 legend({'SP', 'BX', 'LZ'})
