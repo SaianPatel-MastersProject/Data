@@ -1,8 +1,8 @@
 %% Metrics Plotting
 
 runsToPlot ={
-    '+ProcessedData\2024\FYP11_25\2024_FYP11_25_D4_R03.mat';
-    '+ProcessedData\2024\FYP12_02\2024_FYP12_02_D2_R02.mat'
+    '+ProcessedData\2024\FYP12_09\2024_FYP12_09_D4_R01.mat';
+    '+ProcessedData\2024\FYP12_09\2024_FYP12_09_D4_R02.mat';
 };
 
 for i = 1:size(runsToPlot, 1)
